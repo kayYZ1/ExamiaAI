@@ -8,7 +8,9 @@
     "prettier": "prettier --write **/*.{ts,js,mjs}"
   },
   "dependencies": {
-    "hono": "^4.6.13"
+    "@libsql/client": "^0.14.0",
+    "hono": "^4.6.13",
+    "uuid": "^11.0.3"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^8.18.0",
