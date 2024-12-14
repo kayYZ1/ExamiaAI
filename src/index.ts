@@ -8,7 +8,7 @@ app.get('/', (c) => {
   return c.text('Hello Hono!');
 });
 
-app.route('/user', user)
+app.route('/user', user);
 
 export default {
   port: 7676,
