@@ -8,13 +8,14 @@
     "db:studio": "drizzle-kit studio",
     "lint": "bun eslint .",
     "prepare": "husky",
-    "prettier": "prettier --write **/*.{ts,js,mjs}"
+    "prettier": "prettier --write \"**/*.{ts,js,mjs}\""
   },
   "dependencies": {
+    "@hono/zod-validator": "^0.4.2",
     "@libsql/client": "^0.14.0",
     "drizzle-orm": "^0.38.2",
     "hono": "^4.6.13",
-    "uuid": "^11.0.3"
+    "zod": "^3.24.1"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^8.18.0",

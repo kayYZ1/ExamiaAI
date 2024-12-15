@@ -5,4 +5,4 @@ interface User {
   updatedAt: number;
 }
 
-export default User
+export default User;

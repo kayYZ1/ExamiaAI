@@ -1,6 +1,6 @@
-import { describe, expect, it, } from 'bun:test';
+import { describe, expect, it } from 'bun:test';
 
-import app from "../index";
+import app from '../index';
 
 const mockRequest = async (url: RequestInfo | URL, options = {}) => {
   const response = await app.fetch(new Request(url, options));
@@ -18,11 +18,11 @@ describe('User route endpoints', () => {
     const response = await mockRequest('http://localhost:7676/user', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        email: testEmail
-      })
+        email: testEmail,
+      }),
     });
 
     expect(response.status).toBe(201);
