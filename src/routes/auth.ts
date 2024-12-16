@@ -2,13 +2,14 @@ import { Hono } from 'hono';
 import { zValidator } from '@hono/zod-validator';
 import { z } from 'zod';
 import { jwt, sign, verify } from 'hono/jwt';
+import type { JwtVariables } from 'hono/jwt';
 import { eq } from 'drizzle-orm';
-import { setSignedCookie } from 'hono/cookie';
+import { deleteCookie, setCookie } from 'hono/cookie';
 
 import { Users } from '../db/schema';
 import { db } from '../db/turso';
 
-const auth = new Hono();
+const auth = new Hono<{ Variables: JwtVariables }>();
 
 auth.post(
   '/magic-link',
@@ -35,7 +36,7 @@ auth.post(
       {
         email,
         id: userExist[0].id,
-        exp: Math.floor(Date.now() / 1000) + 60 * 5,
+        exp: Math.floor(Date.now() / 1000) + 60 * 5, //5 minutes for email magic link login
       },
       process.env.JWT_SECRET as string
     );
@@ -49,8 +50,6 @@ auth.post(
 
 auth.get('/verify', async (c) => {
   const { token } = c.req.query();
-  console.log(token);
-
   if (!token) {
     return c.json({ message: 'Token is required' }, 400);
   }
@@ -63,12 +62,12 @@ auth.get('/verify', async (c) => {
       {
         email,
         id,
-        exp: 24 * 60 * 60,
+        exp: Math.floor(Date.now() / 1000) + 24 * 60 * 60, // 1 day cookie age
       },
       process.env.JWT_SECRET as string
     );
 
-    await setSignedCookie(c, 'auth', jwtCookieToken, process.env.JWT_COOKIE_SECRET as string, {
+    setCookie(c, 'auth', jwtCookieToken, {
       secure: true,
       httpOnly: true,
       maxAge: 24 * 60 * 60,
@@ -80,6 +79,19 @@ auth.get('/verify', async (c) => {
   } catch (err) {
     return c.json({ message: 'Invalid or expired token' }, 401);
   }
+});
+
+auth.use('*', (c, next) => {
+  const jwtMiddleware = jwt({
+    secret: process.env.JWT_SECRET as string,
+    cookie: 'auth',
+  });
+  return jwtMiddleware(c, next);
+});
+
+auth.post('/logout', (c) => {
+  deleteCookie(c, 'auth');
+  return c.json({ message: 'Successfully logged out.' }, 200);
 });
 
 export default auth;
