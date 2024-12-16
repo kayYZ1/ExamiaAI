@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1734174234831,
+      "tag": "0000_fast_phantom_reporter",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1734175010300,
+      "tag": "0001_wealthy_frog_thor",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1734249560373,
+      "tag": "0002_bored_chamber",
+      "breakpoints": true
+    }
+  ]
+}
