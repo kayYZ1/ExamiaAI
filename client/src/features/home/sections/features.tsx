@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 
 import { colors } from '../../../styles/theme';
-import { FeatureCard } from './ui/feature-card';
+import { FeatureCard } from '../components/feature-card';
 
 const features = [
   {

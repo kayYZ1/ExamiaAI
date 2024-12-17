@@ -34,7 +34,7 @@ export default function Index() {
           <Button
             variant="secondary"
             className="flex items-center gap-2"
-            onClick={() => window.location.href = '/'}
+            onClick={() => (window.location.href = '/')}
           >
             <Home className="w-5 h-5" />
             Return Home

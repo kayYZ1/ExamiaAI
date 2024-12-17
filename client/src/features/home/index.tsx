@@ -1,9 +1,9 @@
 import Navbar from './components/navbar';
-import Hero from './components/hero';
-import Features from './components/features';
-import Stats from './components/stats';
-import Testimonials from './components/testimonials';
-
+import Hero from './sections/hero';
+import Features from './sections/features';
+import Stats from './sections/stats';
+import Testimonials from './sections/testimonials';
+import Footer from './sections/footer';
 import { colors } from '../../styles/theme';
 
 export default function Index() {
@@ -17,6 +17,7 @@ export default function Index() {
         <Features />
         <Stats />
         <Testimonials />
+        <Footer />
       </main>
     </div>
   );

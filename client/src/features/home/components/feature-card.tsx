@@ -1,5 +1,5 @@
 import { LucideIcon } from 'lucide-react';
-import { colors } from '../../../../styles/theme';
+import { colors } from '../../../styles/theme';
 
 interface FeatureCardProps {
   icon: LucideIcon;

@@ -1,9 +1,12 @@
+import { useNavigate } from 'react-router';
 import { GraduationCap } from 'lucide-react';
 
 import Button from '../../../shared/components/ui/button';
 import { colors } from '../../../styles/theme';
 
 export default function Navbar() {
+  const navigate = useNavigate();
+
   return (
     <nav
       className={`fixed w-full top-0 z-50 border-b ${colors.border} ${colors.background.secondary}`}
@@ -19,7 +22,7 @@ export default function Navbar() {
             </span>
           </div>
 
-          <Button variant="primary">Sign In</Button>
+          <Button variant="primary" onClick={() => navigate('/auth')}>Sign In</Button>
         </div>
       </div>
     </nav>
