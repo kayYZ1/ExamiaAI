@@ -7,7 +7,7 @@ import {
   Clock,
 } from 'lucide-react';
 
-import { colors } from '../../../styles/theme';
+import { colors } from '@/styles/theme';
 import { FeatureCard } from '../components/feature-card';
 
 const features = [

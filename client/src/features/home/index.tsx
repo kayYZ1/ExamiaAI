@@ -4,7 +4,8 @@ import Features from './sections/features';
 import Stats from './sections/stats';
 import Testimonials from './sections/testimonials';
 import Footer from './sections/footer';
-import { colors } from '../../styles/theme';
+
+import { colors } from '@/styles/theme';
 
 export default function Index() {
   return (

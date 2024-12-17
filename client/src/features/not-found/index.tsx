@@ -1,6 +1,7 @@
 import { ArrowLeft, Home } from 'lucide-react';
-import { colors } from '../../styles/theme';
-import Button from '../../shared/components/ui/button';
+
+import { colors } from '@/styles/theme';
+import Button from '@/shared/components/ui/button';
 
 export default function Index() {
   return (

@@ -1,8 +1,8 @@
 import { useNavigate } from 'react-router';
 import { GraduationCap } from 'lucide-react';
 
-import Button from '../../../shared/components/ui/button';
-import { colors } from '../../../styles/theme';
+import { colors } from '@/styles/theme';
+import Button from '@/shared/components/ui/button';
 
 export default function Navbar() {
   const navigate = useNavigate();

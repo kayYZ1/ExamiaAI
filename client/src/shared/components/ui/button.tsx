@@ -1,10 +1,10 @@
-import React from 'react';
-import { colors } from '../../../styles/theme';
+import { ButtonHTMLAttributes, ReactNode } from 'react';
 
-interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+import { colors } from '@/styles/theme';
+
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary';
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 export default function Button({

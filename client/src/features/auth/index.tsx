@@ -2,8 +2,8 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import { colors } from '../../styles/theme';
-import Button from '../../shared/components/ui/button';
+import { colors } from '@/styles/theme';
+import Button from '@/shared/components/ui/button';
 
 const schema = z.object({
   email: z.string().email('Please enter a valid email address.'),
