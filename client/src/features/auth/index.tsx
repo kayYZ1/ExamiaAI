@@ -1,6 +1,8 @@
+import { useNavigate } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { ArrowLeft } from 'lucide-react';
 
 import { colors } from '@/styles/theme';
 import Button from '@/shared/components/ui/button';
@@ -12,6 +14,7 @@ const schema = z.object({
 type SignIn = z.infer<typeof schema>;
 
 export default function Index() {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -29,11 +32,18 @@ export default function Index() {
     <div
       className={`${colors.background.main} ${colors.text.primary} flex min-h-screen items-center justify-center p-4`}
     >
+      <button
+        onClick={() => navigate(-1)}
+        className={`absolute top-4 left-4 flex items-center gap-2 text-sm font-medium ${colors.primary.text}`}
+      >
+        <ArrowLeft className="h-5 w-5" />
+        Back
+      </button>
       <div
         className={`${colors.background.secondary} ${colors.border} w-full max-w-md rounded-lg border p-6 shadow-md`}
       >
-        <h1 className="mb-4 text-center text-2xl font-semibold">
-          Sign In with Magic Link
+        <h1 className="mb-2 text-center text-2xl font-semibold">
+          Sign In with email
         </h1>
         <form
           onSubmit={handleSubmit(onSubmit)}
@@ -42,7 +52,7 @@ export default function Index() {
           <div>
             <label
               htmlFor="email"
-              className={`block text-sm font-medium ${colors.text.secondary}`}
+              className={`block text-sm font-medium ${colors.text.secondary} py-2`}
             >
               Email Address
             </label>
