@@ -1,31 +1,44 @@
-import { useState, FormEvent } from 'react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+
 import { colors } from '../../styles/theme';
+import Button from '../../shared/components/ui/button';
+
+const schema = z.object({
+  email: z.string().email('Please enter a valid email address.'),
+});
+
+type SignIn = z.infer<typeof schema>;
 
 export default function Index() {
-  const [email, setEmail] = useState('');
-  const [message, setMessage] = useState('');
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SignIn>({
+    resolver: zodResolver(schema),
+  });
 
-  const handleSignIn = (e: FormEvent) => {
-    e.preventDefault();
-    if (email) {
-      setMessage('A magic link has been sent to your email!');
-      console.log('Send magic link to:', email);
-    } else {
-      setMessage('Please enter a valid email address.');
-    }
+  const onSubmit = (data: SignIn) => {
+    console.log('Magic link sent to:', data.email);
+    alert('A magic link has been sent to your email!');
   };
 
   return (
     <div
-      className={`${colors.background.main} ${colors.text.primary} min-h-screen flex items-center justify-center p-4`}
+      className={`${colors.background.main} ${colors.text.primary} flex min-h-screen items-center justify-center p-4`}
     >
       <div
-        className={`${colors.background.secondary} ${colors.border} border rounded-lg shadow-md p-6 max-w-md w-full`}
+        className={`${colors.background.secondary} ${colors.border} w-full max-w-md rounded-lg border p-6 shadow-md`}
       >
-        <h1 className="text-2xl font-semibold text-center mb-4">
+        <h1 className="mb-4 text-center text-2xl font-semibold">
           Sign In with Magic Link
         </h1>
-        <form onSubmit={handleSignIn} className="space-y-4">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="space-y-4"
+        >
           <div>
             <label
               htmlFor="email"
@@ -36,25 +49,24 @@ export default function Index() {
             <input
               type="email"
               id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
-              className={`w-full px-3 py-2 mt-1 ${colors.background.tertiary} ${colors.text.primary} ${colors.border} border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500`}
+              {...register('email')}
+              className={`mt-1 w-full px-3 py-2 ${colors.background.tertiary} ${colors.text.primary} ${colors.border} rounded-lg border focus:outline-none focus:ring-2 focus:ring-indigo-500`}
             />
+            {errors.email && (
+              <p className={`text-sm ${colors.text.danger} mt-1`}>
+                {errors.email.message}
+              </p>
+            )}
           </div>
-          <button
+          <Button
             type="submit"
-            className={`w-full py-2 ${colors.primary.main} text-white font-semibold rounded-lg transition hover:shadow-lg`}
+            className="w-full py-2"
           >
-            Send Magic Link
-          </button>
+            Send
+          </Button>
         </form>
-        {message && (
-          <p className={`mt-4 text-sm ${colors.text.secondary} text-center`}>
-            {message}
-          </p>
-        )}
       </div>
     </div>
   );
-};
+}

@@ -12,6 +12,7 @@ export const colors = {
     primary: 'text-slate-100',
     secondary: 'text-slate-300',
     muted: 'text-slate-400',
+    danger: 'text-red-600',
   },
   border: 'border-slate-700',
 } as const;

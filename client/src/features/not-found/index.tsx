@@ -12,23 +12,23 @@ export default function Index() {
           404
         </h1>
         <div
-          className={`${colors.text.primary} text-3xl font-semibold mb-6`}
+          className={`${colors.text.primary} mb-6 text-3xl font-semibold`}
         >
           Page Not Found
         </div>
         <p
-          className={`${colors.text.secondary} text-lg max-w-md mx-auto mb-8`}
+          className={`${colors.text.secondary} mx-auto mb-8 max-w-md text-lg`}
         >
           Oops! It seems like you've ventured into uncharted territory. The
           page you're looking for doesn't exist or has been moved.
         </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+        <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
           <Button
             variant="primary"
             className="flex items-center gap-2"
             onClick={() => window.history.back()}
           >
-            <ArrowLeft className="w-5 h-5" />
+            <ArrowLeft className="h-5 w-5" />
             Go Back
           </Button>
           <Button
@@ -36,7 +36,7 @@ export default function Index() {
             className="flex items-center gap-2"
             onClick={() => (window.location.href = '/')}
           >
-            <Home className="w-5 h-5" />
+            <Home className="h-5 w-5" />
             Return Home
           </Button>
         </div>

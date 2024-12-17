@@ -14,7 +14,7 @@ export function FeatureCard({
 }: FeatureCardProps) {
   return (
     <div
-      className={`p-6 rounded-xl ${colors.background.secondary} shadow-lg hover:shadow-xl transition-shadow duration-300`}
+      className={`rounded-xl p-6 ${colors.background.secondary} shadow-lg transition-shadow duration-300 hover:shadow-xl`}
     >
       <Icon className={`h-12 w-12 ${colors.primary.text} mb-4`} />
       <h3 className={`text-xl font-semibold ${colors.text.primary} mb-2`}>

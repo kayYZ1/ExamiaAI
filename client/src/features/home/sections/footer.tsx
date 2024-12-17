@@ -1,8 +1,10 @@
-import { colors } from "../../../styles/theme";
+import { colors } from '../../../styles/theme';
 
 export default function Footer() {
   return (
-    <footer className={`${colors.background.main} ${colors.border} border-t p-4`}>
+    <footer
+      className={`${colors.background.main} ${colors.border} border-t p-4`}
+    >
       <div className="container mx-auto text-center">
         <p className={`${colors.text.secondary}`}>
           © {new Date().getFullYear()} ExamiaAI. All rights reserved.
@@ -24,4 +26,4 @@ export default function Footer() {
       </div>
     </footer>
   );
-};
+}

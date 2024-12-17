@@ -27,9 +27,9 @@ const testimonials = [
 
 export default function Testimonials() {
   return (
-    <section className="py-20 bg-white dark:bg-slate-900">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
+    <section className="bg-white py-20 dark:bg-slate-900">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mb-16 text-center">
           <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
             What Our Students Say
           </h2>
@@ -39,17 +39,17 @@ export default function Testimonials() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
           {testimonials.map((testimonial, index) => (
             <div
               key={index}
-              className="p-6 rounded-xl bg-slate-50 dark:bg-slate-800 shadow-lg"
+              className="rounded-xl bg-slate-50 p-6 shadow-lg dark:bg-slate-800"
             >
-              <div className="flex items-center mb-6">
+              <div className="mb-6 flex items-center">
                 <img
                   src={testimonial.image}
                   alt={testimonial.author}
-                  className="w-12 h-12 rounded-full object-cover"
+                  className="h-12 w-12 rounded-full object-cover"
                 />
                 <div className="ml-4">
                   <div className="font-semibold text-slate-900 dark:text-slate-100">
@@ -60,7 +60,7 @@ export default function Testimonials() {
                   </div>
                 </div>
               </div>
-              <p className="text-slate-600 dark:text-slate-300 italic">
+              <p className="italic text-slate-600 dark:text-slate-300">
                 "{testimonial.quote}"
               </p>
             </div>

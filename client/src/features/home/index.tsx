@@ -11,7 +11,7 @@ export default function Index() {
     <div className={`min-h-screen ${colors.background.main}`}>
       <Navbar />
       <main className="pt-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
           <Hero />
         </div>
         <Features />

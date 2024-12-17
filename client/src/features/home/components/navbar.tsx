@@ -9,10 +9,10 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`fixed w-full top-0 z-50 border-b ${colors.border} ${colors.background.secondary}`}
+      className={`fixed top-0 z-50 w-full border-b ${colors.border} ${colors.background.secondary}`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16 items-center">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex h-16 items-center justify-between">
           <div className="flex items-center">
             <GraduationCap className={`h-8 w-8 ${colors.primary.text}`} />
             <span
@@ -22,7 +22,12 @@ export default function Navbar() {
             </span>
           </div>
 
-          <Button variant="primary" onClick={() => navigate('/auth')}>Sign In</Button>
+          <Button
+            variant="primary"
+            onClick={() => navigate('/auth')}
+          >
+            Sign In
+          </Button>
         </div>
       </div>
     </nav>

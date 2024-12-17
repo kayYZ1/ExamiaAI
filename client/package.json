@@ -11,11 +11,14 @@
     "prettier": "prettier --write \"**/*.{tsx,ts,html,css,js,jsx}\""
   },
   "dependencies": {
+    "@hookform/resolvers": "^3.9.1",
     "lucide-react": "^0.468.0",
     "prettier": "^3.4.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-router": "^7.0.2"
+    "react-hook-form": "^7.54.1",
+    "react-router": "^7.0.2",
+    "zod": "^3.24.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.15.0",
@@ -26,6 +29,7 @@
     "eslint-plugin-react-hooks": "^5.0.0",
     "eslint-plugin-react-refresh": "^0.4.14",
     "globals": "^15.12.0",
+    "prettier-plugin-tailwindcss": "^0.6.9",
     "tailwindcss": "^3.4.16",
     "typescript": "^5.7.2",
     "typescript-eslint": "^8.15.0",
