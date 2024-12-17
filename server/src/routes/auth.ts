@@ -42,7 +42,7 @@ auth.post(
       process.env.JWT_SECRET as string
     );
 
-    const magicLink = `http://localhost:7676/auth/verify?token=${jwtToken}`;
+    const magicLink = `http://localhost:5173/auth/verify/${jwtToken}`;
 
     try {
       const transporter = createTransport({
@@ -109,8 +109,8 @@ auth.use('*', (c, next) => {
   return jwtMiddleware(c, next);
 });
 
-auth.get('/test', (c) => {
-  return c.json({ message: 'Verified cookie' }, 200);
+auth.get('/validate-cookie', (c) => {
+  return c.json({ message: 'Validation succesfull' }, 200);
 });
 
 auth.post('/logout', (c) => {

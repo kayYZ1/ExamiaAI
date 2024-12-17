@@ -11,10 +11,7 @@ export default function Stats() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
           {stats.map((stat, index) => (
-            <div
-              key={index}
-              className="text-center"
-            >
+            <div key={index} className="text-center">
               <div className="mb-2 text-4xl font-bold text-white">
                 {stat.number}
               </div>

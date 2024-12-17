@@ -22,10 +22,7 @@ export default function Navbar() {
             </span>
           </div>
 
-          <Button
-            variant="primary"
-            onClick={() => navigate('/auth')}
-          >
+          <Button variant="primary" onClick={() => navigate('/auth')}>
             Sign In
           </Button>
         </div>

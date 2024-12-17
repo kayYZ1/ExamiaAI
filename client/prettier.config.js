@@ -6,7 +6,6 @@ export default {
   singleQuote: true,
   trailingComma: 'es5',
   bracketSpacing: true,
-  singleAttributePerLine: true,
   htmlWhitespaceSensitivity: 'ignore',
   plugins: [
     'prettier-plugin-tailwindcss',
