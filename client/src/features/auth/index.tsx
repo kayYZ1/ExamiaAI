@@ -2,19 +2,32 @@ import { useNavigate } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation } from '@tanstack/react-query';
 import { ArrowLeft } from 'lucide-react';
 
 import { colors } from '@/styles/theme';
 import Button from '@/shared/components/ui/button';
+import api from '@/shared/utils/api';
 
 const schema = z.object({
-  email: z.string().email('Please enter a valid email address.'),
+  email: z
+    .string()
+    .email('Please enter a valid email address.')
+    .max(30, 'Ayy thats too big'),
 });
 
 type SignIn = z.infer<typeof schema>;
 
 export default function Index() {
   const navigate = useNavigate();
+
+  const { mutate, isPending, isError, error, isSuccess } = useMutation({
+    mutationKey: ['user'],
+    mutationFn: async (data: SignIn) => {
+      await api.post('/auth/magic-link', data);
+    },
+  });
+
   const {
     register,
     handleSubmit,
@@ -23,18 +36,13 @@ export default function Index() {
     resolver: zodResolver(schema),
   });
 
-  const onSubmit = (data: SignIn) => {
-    console.log('Magic link sent to:', data.email);
-    alert('A magic link has been sent to your email!');
-  };
-
   return (
     <div
       className={`${colors.background.main} ${colors.text.primary} flex min-h-screen items-center justify-center p-4`}
     >
       <button
         onClick={() => navigate(-1)}
-        className={`absolute top-4 left-4 flex items-center gap-2 text-sm font-medium ${colors.primary.text}`}
+        className={`absolute left-4 top-4 flex items-center gap-2 text-sm font-medium ${colors.primary.text}`}
       >
         <ArrowLeft className="h-5 w-5" />
         Back
@@ -46,7 +54,7 @@ export default function Index() {
           Sign In with email
         </h1>
         <form
-          onSubmit={handleSubmit(onSubmit)}
+          onSubmit={handleSubmit((data: SignIn) => mutate(data))}
           className="space-y-4"
         >
           <div>
@@ -72,10 +80,21 @@ export default function Index() {
           <Button
             type="submit"
             className="w-full py-2"
+            disabled={isPending}
           >
-            Send
+            {isPending ? '...' : 'Send'}
           </Button>
         </form>
+        {isError && (
+          <p className={`text-sm ${colors.text.danger} pt-4`}>
+            {error && error.message}
+          </p>
+        )}
+        {isSuccess && (
+          <p className={`text-sm ${colors.text.success} pt-4`}>
+            Magic link has been sent. Check your email.
+          </p>
+        )}
       </div>
     </div>
   );

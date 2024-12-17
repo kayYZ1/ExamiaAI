@@ -5,7 +5,7 @@ import { jwt, sign, verify } from 'hono/jwt';
 import type { JwtVariables } from 'hono/jwt';
 import { eq } from 'drizzle-orm';
 import { deleteCookie, setCookie } from 'hono/cookie';
-import { createTransport } from "nodemailer"
+import { createTransport } from 'nodemailer';
 
 import { Users } from '../db/schema';
 import { db } from '../db/turso';
@@ -50,21 +50,20 @@ auth.post(
         port: Number(process.env.MAIL_PORT),
         auth: {
           user: process.env.MAIL_USER,
-          pass: process.env.MAIL_PASS
-        }
-      })
+          pass: process.env.MAIL_PASS,
+        },
+      });
       const mailOptions = {
         from: 'examia@mail.com',
         to: email,
         subject: 'Magic link login',
-        text: `Sign in link: ${magicLink}`
-      }
+        text: `Sign in link: ${magicLink}`,
+      };
 
-      await transporter.sendMail(mailOptions)
+      await transporter.sendMail(mailOptions);
       return c.json({ message: `Email sent to ${email}` });
-    }
-    catch (error) {
-      return c.json({ message: "Failed to send email", error: error }, 500);
+    } catch (error) {
+      return c.json({ message: 'Failed to send email', error: error }, 500);
     }
   }
 );
@@ -111,8 +110,8 @@ auth.use('*', (c, next) => {
 });
 
 auth.get('/test', (c) => {
-  return c.json({ message: "Verified cookie" }, 200)
-})
+  return c.json({ message: 'Verified cookie' }, 200);
+});
 
 auth.post('/logout', (c) => {
   deleteCookie(c, 'auth');
