@@ -1,4 +1,4 @@
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 
 import api from '@/shared/utils/api';
@@ -6,6 +6,7 @@ import { colors } from '@/styles/theme';
 
 export default function Verify() {
   const { token } = useParams();
+  const navigate = useNavigate();
   const { isSuccess, isLoading, error } = useQuery({
     queryKey: ['auth', token],
     queryFn: async () => {
@@ -13,6 +14,8 @@ export default function Verify() {
       return response.data;
     },
   });
+
+  if (isSuccess) navigate('/dashboard');
 
   return (
     <div

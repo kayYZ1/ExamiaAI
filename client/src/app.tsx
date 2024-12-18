@@ -8,6 +8,7 @@ const NotFound = lazy(() => import('./features/not-found'));
 const Auth = lazy(() => import('./features/auth'));
 const Verify = lazy(() => import('./features/auth/verify'));
 const Dashboard = lazy(() => import('./features/dashboard/index'));
+const UserPanel = lazy(() => import('./features/dashboard/user-panel'));
 
 export default function App() {
   return (
@@ -19,8 +20,15 @@ export default function App() {
           <Route path="" element={<Auth />} />
           <Route path="verify/:token" element={<Verify />} />
         </Route>
-        <Route path="dashboard" element={<AuthGuard />}>
-          <Route path="" element={<Dashboard />} />
+        <Route
+          path="dashboard"
+          element={
+            <AuthGuard>
+              <Dashboard />
+            </AuthGuard>
+          }
+        >
+          <Route path="" element={<UserPanel />} />
         </Route>
       </Routes>
     </BrowserRouter>

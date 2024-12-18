@@ -1,10 +1,15 @@
 import { useQuery } from '@tanstack/react-query';
-import { Outlet, Navigate } from 'react-router';
+import { Navigate } from 'react-router';
 
 import api from '@/shared/utils/api';
 import { colors } from '@/styles/theme';
+import { JSX } from 'react';
 
-export default function AuthGuard() {
+export default function AuthGuard({
+  children,
+}: {
+  children: JSX.Element;
+}) {
   const { isLoading, isError } = useQuery({
     queryKey: ['auth'],
     queryFn: async () => {
@@ -34,5 +39,5 @@ export default function AuthGuard() {
   if (isError) return <Navigate to="/auth" replace />;
   //Think of a better solution to handle fallbacks here
 
-  return <Outlet />;
+  return children;
 }
