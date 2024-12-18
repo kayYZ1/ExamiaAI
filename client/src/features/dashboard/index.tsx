@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { colors } from '@/styles/theme';
 import { Outlet } from 'react-router';
+import Button from '@/shared/components/ui/button';
 
 const statCards = [
   {
@@ -50,18 +51,10 @@ export default function Index() {
                 EXAMIA
               </span>
             </div>
-            <div className="flex items-center gap-4">
-              <button className="relative p-2">
-                <Bell className={`h-6 w-6 ${colors.text.secondary}`} />
-                <span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-red-500"></span>
-              </button>
-              <div className="flex items-center gap-3">
-                <img
-                  src="https://i.pravatar.cc/64"
-                  alt="Profile"
-                  className="h-8 w-8 rounded-full"
-                />
-              </div>
+            <div
+              className={`inline-block ${colors.text.primary} hover:${colors.text.muted} cursor-pointer border-b-4 border-transparent hover:border-indigo-700`}
+            >
+              Account
             </div>
           </div>
         </div>
