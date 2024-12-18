@@ -1,15 +1,16 @@
-import { useQuery } from '@tanstack/react-query';
-import { Navigate } from 'react-router';
-
-import api from '@/shared/utils/api';
-import { colors } from '@/styles/theme';
 import { JSX } from 'react';
+import { Navigate, useLocation } from 'react-router';
+import { useQuery } from '@tanstack/react-query';
+
+import api from '@/lib/api';
+import { colors } from '@/styles/theme';
 
 export default function AuthGuard({
   children,
 }: {
-  children: JSX.Element;
+  children?: JSX.Element;
 }) {
+  const location = useLocation();
   const { isLoading, isError } = useQuery({
     queryKey: ['auth'],
     queryFn: async () => {
@@ -17,6 +18,8 @@ export default function AuthGuard({
       return response.data;
     },
   });
+
+  const isAuthPathname = location.pathname.includes('auth');
 
   if (isLoading)
     return (
@@ -36,8 +39,10 @@ export default function AuthGuard({
         </div>
       </div>
     );
-  if (isError) return <Navigate to="/auth" replace />;
   //Think of a better solution to handle fallbacks here
 
-  return children;
+  if (isError)
+    return isAuthPathname ? children : <Navigate to="/auth" replace />;
+
+  return isAuthPathname ? <Navigate to="/dashboard" replace /> : children;
 }
