@@ -5,6 +5,7 @@ import { jwt, sign, verify } from 'hono/jwt';
 import type { JwtVariables } from 'hono/jwt';
 import { eq } from 'drizzle-orm';
 import { deleteCookie, setCookie } from 'hono/cookie';
+import { createTransport } from 'nodemailer';
 
 import { Users } from '../db/schema';
 import { db } from '../db/turso';
@@ -41,10 +42,29 @@ auth.post(
       process.env.JWT_SECRET as string
     );
 
-    const magicLink = `http://localhost:7676/auth/verify?token=${jwtToken}`;
-    //Send it via e-mail
+    const magicLink = `http://localhost:5173/auth/verify/${jwtToken}`;
 
-    return c.json({ message: `${magicLink}` });
+    try {
+      const transporter = createTransport({
+        host: process.env.MAIL_HOST as string,
+        port: Number(process.env.MAIL_PORT),
+        auth: {
+          user: process.env.MAIL_USER,
+          pass: process.env.MAIL_PASS,
+        },
+      });
+      const mailOptions = {
+        from: 'examia@mail.com',
+        to: email,
+        subject: 'Magic link login',
+        text: `Sign in link: ${magicLink}`,
+      };
+
+      await transporter.sendMail(mailOptions);
+      return c.json({ message: `Email sent to ${email}` });
+    } catch (error) {
+      return c.json({ message: 'Failed to send email', error: error }, 500);
+    }
   }
 );
 
@@ -87,6 +107,10 @@ auth.use('*', (c, next) => {
     cookie: 'auth',
   });
   return jwtMiddleware(c, next);
+});
+
+auth.get('/validate-cookie', (c) => {
+  return c.json({ message: 'Validation succesfull' }, 200);
 });
 
 auth.post('/logout', (c) => {
