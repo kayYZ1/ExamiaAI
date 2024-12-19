@@ -118,7 +118,13 @@ auth.get('/profile', async (c) => {
   const { payload } = decode(authCookie);
 
   const user = await db
-    .select({ id: Users.id, email: Users.email, tokens: Users.tokens })
+    .select({
+      id: Users.id,
+      email: Users.email,
+      tokens: Users.tokens,
+      plan: Users.plan,
+      alias: Users.alias,
+    })
     .from(Users)
     .where(eq(Users.id, payload.id as string));
 
