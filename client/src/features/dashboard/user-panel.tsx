@@ -12,7 +12,7 @@ export default function UserPanel() {
   return (
     <div className="space-y-2 pt-4">
       <h1 className={`text-xl font-bold ${colors.text.primary}`}>
-        Welcome, {isLoading ? '...' : user.email}
+        Welcome, {isLoading ? '...' : user.alias ? user.alias : user.email}
       </h1>
       <p className={`text-md ${colors.text.muted}`}>
         Here is a quick onboarding
