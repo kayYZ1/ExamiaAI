@@ -6,6 +6,7 @@ import { useMutation } from '@tanstack/react-query';
 import { colors } from '@/styles/theme';
 import Button from '@/shared/components/ui/button';
 import api from '@/lib/api';
+import Spinner from '@/shared/components/ui/spinner';
 
 const schema = z.object({
   email: z
@@ -64,12 +65,12 @@ export default function SignIn() {
           )}
         </div>
         <Button type="submit" className="w-full py-2" disabled={isPending}>
-          {isPending ? '...' : 'Send'}
+          {isPending ? <Spinner /> : 'Send'}
         </Button>
       </form>
       {isError && (
         <p className={`text-sm ${colors.text.danger} pt-4`}>
-          {error && error.message}
+          {error && (error as any).response.data.message}
         </p>
       )}
       {isSuccess && (

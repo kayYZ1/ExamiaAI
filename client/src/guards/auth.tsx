@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import api from '@/lib/api';
 import { colors } from '@/styles/theme';
+import Spinner from '@/shared/components/ui/spinner';
 
 export default function AuthGuard({
   children,
@@ -26,17 +27,7 @@ export default function AuthGuard({
       <div
         className={`${colors.background.main} flex h-screen items-center justify-center`}
       >
-        <div className="flex items-center space-x-2">
-          <div
-            className={`${colors.text.muted} h-4 w-4 animate-bounce rounded-full`}
-          />
-          <div
-            className={`${colors.text.muted} h-4 w-4 animate-bounce rounded-full delay-200`}
-          />
-          <div
-            className={`${colors.text.muted} delay-400 h-4 w-4 animate-bounce rounded-full`}
-          />
-        </div>
+        <Spinner />
       </div>
     );
   //Think of a better solution to handle fallbacks here
