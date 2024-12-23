@@ -14,3 +14,5 @@ export const Users = sqliteTable('users', {
     () => new Date()
   ),
 });
+
+export const Sets = sqliteTable('sets', {});

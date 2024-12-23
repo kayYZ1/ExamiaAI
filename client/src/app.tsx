@@ -10,7 +10,7 @@ const SignIn = lazy(() => import('./features/auth/sign-in'));
 const Verify = lazy(() => import('./features/auth/verify'));
 const Dashboard = lazy(() => import('./features/dashboard/index'));
 const UserPanel = lazy(() => import('./features/dashboard/user-panel'));
-const Account = lazy(() => import('./features/dashboard/account'))
+const Account = lazy(() => import('./features/dashboard/account'));
 
 export default function App() {
   return (
