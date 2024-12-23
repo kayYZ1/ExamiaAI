@@ -15,7 +15,11 @@ export default function Verify() {
     },
   });
 
-  if (isSuccess) navigate('/dashboard');
+  if (isSuccess) {
+    setTimeout(() => {
+      navigate('/dashboard');
+    }, 1000);
+  }
 
   return (
     <div className="text-center">

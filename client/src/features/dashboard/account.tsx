@@ -1,4 +1,5 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
+import { useNavigate } from 'react-router';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -20,17 +21,30 @@ const schema = z.object({
 type Update = z.infer<typeof schema>;
 
 export default function Account() {
+  const navigate = useNavigate();
   const { data: user } = useQuery({
     queryKey: ['user'],
     queryFn: getUser,
   });
 
-  const { mutate, isPending } = useMutation({
+  const { mutate: updateMutate, isPending: updatePending } = useMutation({
     mutationKey: ['user'],
     mutationFn: async (data: Update) => {
       await api.patch('/user/update', data);
     },
   });
+
+  const { mutate: logoutMutate, isPending: logoutPending } = useMutation({
+    mutationKey: ['auth'],
+    mutationFn: async () => {
+      await api.post('/auth/logout');
+    },
+  });
+
+  const logoutHandler = () => {
+    logoutMutate();
+    navigate('/', { replace: true });
+  };
 
   const {
     register,
@@ -46,12 +60,21 @@ export default function Account() {
 
   return (
     <div className="mx-auto py-6">
-      <h2 className={`${colors.text.primary} mb-6 text-3xl font-bold`}>
-        Account Settings
-      </h2>
+      <div className="flex justify-between">
+        <h2 className={`${colors.text.primary} mb-6 text-3xl font-bold`}>
+          Account Settings
+        </h2>
+        <button
+          onClick={logoutHandler}
+          disabled={logoutPending}
+          className={`${colors.primary.main} ${colors.text.primary} ml-auto h-12 w-24 rounded-md`}
+        >
+          {logoutPending ? <Spinner /> : 'Logout'}
+        </button>
+      </div>
       <form
         className="space-y-4"
-        onSubmit={handleSubmit((data: Update) => mutate(data))}
+        onSubmit={handleSubmit((data: Update) => updateMutate(data))}
       >
         <div className="space-y-4">
           <h3 className={`${colors.text.secondary} text-xl font-medium`}>
@@ -104,12 +127,14 @@ export default function Account() {
         <div className="flex justify-end">
           <button
             type="submit"
-            disabled={!isDirty || isPending}
+            disabled={!isDirty || updatePending}
             className={`ml-auto ${colors.primary.main} rounded-md px-4 py-2 ${colors.text.primary} focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 ${
-              !isDirty || isPending ? 'cursor-not-allowed opacity-50' : ''
+              !isDirty || updatePending
+                ? 'cursor-not-allowed opacity-50'
+                : ''
             }`}
           >
-            {isPending ? <Spinner /> : 'Update'}
+            {updatePending ? <Spinner /> : 'Update'}
           </button>
         </div>
       </form>

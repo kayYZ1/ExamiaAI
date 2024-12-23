@@ -19,7 +19,7 @@ type SignIn = z.infer<typeof schema>;
 
 export default function SignIn() {
   const { mutate, isPending, isError, error, isSuccess } = useMutation({
-    mutationKey: ['user'],
+    mutationKey: ['auth'],
     mutationFn: async (data: SignIn) => {
       await api.post('/auth/magic-link', data);
     },
@@ -47,7 +47,7 @@ export default function SignIn() {
         <div>
           <label
             htmlFor="email"
-            className={`block text-sm font-medium ${colors.text.secondary} py-2`}
+            className={`block text-sm font-medium ${colors.text.secondary} py-1`}
           >
             Email Address
           </label>
