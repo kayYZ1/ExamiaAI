@@ -1,10 +1,10 @@
 import { Hono } from 'hono';
 import { zValidator } from '@hono/zod-validator';
 import { z } from 'zod';
-import { jwt, sign, verify } from 'hono/jwt';
+import { decode, jwt, sign, verify } from 'hono/jwt';
 import type { JwtVariables } from 'hono/jwt';
 import { eq } from 'drizzle-orm';
-import { deleteCookie, setCookie } from 'hono/cookie';
+import { deleteCookie, getCookie, setCookie } from 'hono/cookie';
 import { createTransport } from 'nodemailer';
 
 import { Users } from '../db/schema';
@@ -24,19 +24,19 @@ auth.post(
     const body = c.req.valid('json');
     const { email } = body;
 
-    const userExist = await db
+    const user = await db
       .select({ email: Users.email, id: Users.id })
       .from(Users)
       .where(eq(Users.email, email));
 
-    if (userExist.length === 0) {
+    if (user.length === 0) {
       return c.json({ message: 'User not found' }, 404);
     }
 
     const jwtToken = await sign(
       {
         email,
-        id: userExist[0].id,
+        id: user[0].id,
         exp: Math.floor(Date.now() / 1000) + 60 * 5, //5 minutes for email magic link login
       },
       process.env.JWT_SECRET as string
@@ -92,7 +92,7 @@ auth.get('/verify', async (c) => {
       httpOnly: true,
       maxAge: 24 * 60 * 60,
       expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
-      sameSite: 'Strict',
+      sameSite: 'Lax',
     });
 
     return c.json({ message: 'Succesfully validated. Check cookies.' }, 200);
@@ -111,6 +111,28 @@ auth.use('*', (c, next) => {
 
 auth.get('/validate-cookie', (c) => {
   return c.json({ message: 'Validation succesfull' }, 200);
+});
+
+auth.get('/profile', async (c) => {
+  const authCookie = getCookie(c, 'auth') as string;
+  const { payload } = decode(authCookie);
+
+  const user = await db
+    .select({
+      id: Users.id,
+      email: Users.email,
+      tokens: Users.tokens,
+      plan: Users.plan,
+      alias: Users.alias,
+    })
+    .from(Users)
+    .where(eq(Users.id, payload.id as string));
+
+  if (!user) {
+    return c.json({ message: 'User does not exist' }, 404);
+  }
+
+  return c.json(user[0], 200);
 });
 
 auth.post('/logout', (c) => {

@@ -22,6 +22,13 @@
       "when": 1734249560373,
       "tag": "0002_bored_chamber",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1734629125017,
+      "tag": "0003_serious_skin",
+      "breakpoints": true
     }
   ]
 }

@@ -6,6 +6,7 @@ import { useMutation } from '@tanstack/react-query';
 import { colors } from '@/styles/theme';
 import Button from '@/shared/components/ui/button';
 import api from '@/lib/api';
+import Spinner from '@/shared/components/ui/spinner';
 
 const schema = z.object({
   email: z
@@ -18,7 +19,7 @@ type SignIn = z.infer<typeof schema>;
 
 export default function SignIn() {
   const { mutate, isPending, isError, error, isSuccess } = useMutation({
-    mutationKey: ['user'],
+    mutationKey: ['auth'],
     mutationFn: async (data: SignIn) => {
       await api.post('/auth/magic-link', data);
     },
@@ -46,7 +47,7 @@ export default function SignIn() {
         <div>
           <label
             htmlFor="email"
-            className={`block text-sm font-medium ${colors.text.secondary} py-2`}
+            className={`block text-sm font-medium ${colors.text.secondary} py-1`}
           >
             Email Address
           </label>
@@ -64,12 +65,12 @@ export default function SignIn() {
           )}
         </div>
         <Button type="submit" className="w-full py-2" disabled={isPending}>
-          {isPending ? '...' : 'Send'}
+          {isPending ? <Spinner /> : 'Send'}
         </Button>
       </form>
       {isError && (
         <p className={`text-sm ${colors.text.danger} pt-4`}>
-          {error && error.message}
+          {error && (error as any).response.data.message}
         </p>
       )}
       {isSuccess && (
