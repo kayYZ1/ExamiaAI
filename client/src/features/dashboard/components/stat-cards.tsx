@@ -27,9 +27,11 @@ export default function StatCards() {
             <p className={`text-sm ${colors.text.muted}`}>
               Sets available
             </p>
-            <p className={`text-2xl font-semibold ${colors.text.primary}`}>
-              1/3
-            </p>
+            <span
+              className={`text-2xl font-semibold ${colors.text.primary}`}
+            >
+              {isPending ? <Spinner /> : user?.sets + '/3'}
+            </span>
           </div>
         </div>
       </div>
@@ -45,7 +47,7 @@ export default function StatCards() {
             <span
               className={`text-2xl font-semibold ${colors.text.primary}`}
             >
-              {isPending ? <Spinner /> : user.tokens + '/15'}
+              {isPending ? <Spinner /> : user?.tokens + '/15'}
             </span>
           </div>
         </div>
@@ -73,7 +75,7 @@ export default function StatCards() {
             <span
               className={`text-2xl font-semibold ${colors.text.primary}`}
             >
-              {isPending ? <Spinner /> : user.plan}
+              {isPending ? <Spinner /> : user?.plan}
             </span>
           </div>
         </div>

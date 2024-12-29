@@ -121,6 +121,7 @@ auth.get('/profile', async (c) => {
     .select({
       id: User.id,
       email: User.email,
+      sets: User.sets,
       tokens: User.tokens,
       plan: User.plan,
       alias: User.alias,

@@ -10,9 +10,9 @@ import { zValidator } from '@hono/zod-validator';
 import { db } from '../db/turso';
 import { Set, User } from '../db/schema';
 
-const sets = new Hono<{ Variables: JwtVariables }>();
+const set = new Hono<{ Variables: JwtVariables }>();
 
-sets.use('*', (c, next) => {
+set.use('*', (c, next) => {
   const jwtMiddleware = jwt({
     secret: process.env.JWT_SECRET as string,
     cookie: 'auth',
@@ -20,7 +20,7 @@ sets.use('*', (c, next) => {
   return jwtMiddleware(c, next);
 });
 
-sets.get('/', async (c) => {
+set.get('/', async (c) => {
   const authCookie = getCookie(c, 'auth') as string;
   const { payload } = decode(authCookie);
 
@@ -37,7 +37,7 @@ sets.get('/', async (c) => {
   return c.json(sets, 200);
 });
 
-sets.post(
+set.post(
   '/',
   zValidator(
     'json',
@@ -64,6 +64,13 @@ sets.post(
 
     await db.insert(Set).values({ id, name, userId: payload.id as string });
 
+    await db
+      .update(User)
+      .set({ sets: user[0].sets + 1 })
+      .where(eq(User.id, payload.id as string));
+
     return c.json(`Set ${name} created.`, 201);
   }
 );
+
+export default set;
