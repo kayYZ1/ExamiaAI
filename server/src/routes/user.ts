@@ -8,12 +8,12 @@ import { getCookie } from 'hono/cookie';
 import { eq } from 'drizzle-orm';
 
 import { db } from '../db/turso';
-import { Users } from '../db/schema';
+import { User } from '../db/schema';
 
 const user = new Hono<{ Variables: JwtVariables }>();
 
 user.get('/', async (c) => {
-  const result = await db.select().from(Users).all();
+  const result = await db.select().from(User).all();
   return c.json(result, 200);
 });
 
@@ -30,7 +30,7 @@ user.post(
     const id = randomUUID();
     const { email } = body;
 
-    await db.insert(Users).values({ id, email });
+    await db.insert(User).values({ id, email });
 
     return c.json(`User ${email} created.`, 201);
   }
@@ -45,7 +45,7 @@ user.use('*', (c, next) => {
 });
 
 user.patch(
-  'update',
+  '/',
   zValidator(
     'json',
     z.object({
@@ -58,14 +58,10 @@ user.patch(
     const authCookie = getCookie(c, 'auth') as string;
     const { payload } = decode(authCookie);
 
-    if (!user) {
-      return c.json({ message: 'User does not exist' }, 404);
-    }
-
     await db
-      .update(Users)
+      .update(User)
       .set({ alias: body.alias, email: body.email })
-      .where(eq(Users.id, payload.id as string));
+      .where(eq(User.id, payload.id as string));
 
     return c.json({ message: `User ${body.email} updated` }, 200);
   }

@@ -7,7 +7,7 @@ import { eq } from 'drizzle-orm';
 import { deleteCookie, getCookie, setCookie } from 'hono/cookie';
 import { createTransport } from 'nodemailer';
 
-import { Users } from '../db/schema';
+import { User } from '../db/schema';
 import { db } from '../db/turso';
 
 const auth = new Hono<{ Variables: JwtVariables }>();
@@ -25,11 +25,11 @@ auth.post(
     const { email } = body;
 
     const user = await db
-      .select({ email: Users.email, id: Users.id })
-      .from(Users)
-      .where(eq(Users.email, email));
+      .select({ email: User.email, id: User.id })
+      .from(User)
+      .where(eq(User.email, email));
 
-    if (user.length === 0) {
+    if (!user) {
       return c.json({ message: 'User not found' }, 404);
     }
 
@@ -119,14 +119,14 @@ auth.get('/profile', async (c) => {
 
   const user = await db
     .select({
-      id: Users.id,
-      email: Users.email,
-      tokens: Users.tokens,
-      plan: Users.plan,
-      alias: Users.alias,
+      id: User.id,
+      email: User.email,
+      tokens: User.tokens,
+      plan: User.plan,
+      alias: User.alias,
     })
-    .from(Users)
-    .where(eq(Users.id, payload.id as string));
+    .from(User)
+    .where(eq(User.id, payload.id as string));
 
   if (!user) {
     return c.json({ message: 'User does not exist' }, 404);
