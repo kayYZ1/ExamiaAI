@@ -4,7 +4,7 @@ import { GraduationCap, BookOpen, Users, Calendar } from 'lucide-react';
 import { colors } from '@/styles/theme';
 import { getUser } from '@/lib/queries';
 import Spinner from '@/shared/components/ui/spinner';
-import { User } from '@/shared/ts/types';
+import type { User } from '@/shared/ts/types';
 
 export default function StatCards() {
   const {

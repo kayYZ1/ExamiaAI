@@ -9,3 +9,8 @@ export const getSets = async () => {
   const response = await api.get('/set');
   return response.data;
 };
+
+export const getSet = async (setId: string) => {
+  const response = await api.get(`/set/${setId}`);
+  return response.data;
+};

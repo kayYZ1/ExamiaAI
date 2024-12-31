@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import { colors } from '@/styles/theme';
 import { getSets } from '@/lib/queries';
-import { Set } from '@/shared/ts/types';
+import type { Set } from '@/shared/ts/types';
 import Spinner from '@/shared/components/ui/spinner';
 import Modal from '@/shared/components/ui/modal';
 
