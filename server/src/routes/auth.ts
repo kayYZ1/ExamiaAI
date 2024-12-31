@@ -1,14 +1,15 @@
 import { Hono } from 'hono';
 import { zValidator } from '@hono/zod-validator';
 import { z } from 'zod';
-import { decode, jwt, sign, verify } from 'hono/jwt';
+import { jwt, sign, verify } from 'hono/jwt';
 import type { JwtVariables } from 'hono/jwt';
 import { eq } from 'drizzle-orm';
-import { deleteCookie, getCookie, setCookie } from 'hono/cookie';
+import { deleteCookie, setCookie } from 'hono/cookie';
 import { createTransport } from 'nodemailer';
 
 import { User } from '../db/schema';
 import { db } from '../db/turso';
+import { getUserIdFromCookie } from '../shared/utils';
 
 const auth = new Hono<{ Variables: JwtVariables }>();
 
@@ -114,8 +115,7 @@ auth.get('/validate-cookie', (c) => {
 });
 
 auth.get('/profile', async (c) => {
-  const authCookie = getCookie(c, 'auth') as string;
-  const { payload } = decode(authCookie);
+  const userId = getUserIdFromCookie(c);
 
   const user = await db
     .select({
@@ -127,7 +127,7 @@ auth.get('/profile', async (c) => {
       alias: User.alias,
     })
     .from(User)
-    .where(eq(User.id, payload.id as string));
+    .where(eq(User.id, userId));
 
   if (!user) {
     return c.json({ message: 'User does not exist' }, 404);
