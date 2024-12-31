@@ -24,7 +24,12 @@ set.get('/', async (c) => {
   const userId = getUserIdFromCookie(c);
 
   const sets = await db
-    .select({ id: Set.id, name: Set.name })
+    .select({
+      id: Set.id,
+      name: Set.name,
+      userId: Set.userId,
+      createdAt: Set.createdAt,
+    })
     .from(Set)
     .where(eq(Set.userId, userId))
     .all();
@@ -41,7 +46,12 @@ set.get('/:id', async (c) => {
   const setId = c.req.param('id');
 
   const set = await db
-    .select({ id: Set.id, name: Set.name })
+    .select({
+      id: Set.id,
+      name: Set.name,
+      userId: Set.userId,
+      createdAt: Set.createdAt,
+    })
     .from(Set)
     .where(and(eq(Set.userId, userId), eq(Set.id, setId)));
 

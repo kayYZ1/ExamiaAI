@@ -12,4 +12,6 @@ export type User = {
 export type Set = {
   id: string;
   name: string;
+  userId: string;
+  createdAt: string;
 };

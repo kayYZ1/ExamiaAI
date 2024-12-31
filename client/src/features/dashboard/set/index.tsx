@@ -6,6 +6,9 @@ import Spinner from '@/shared/components/ui/spinner';
 import type { Set } from '@/shared/ts/types';
 import { colors } from '@/styles/theme';
 
+import Questions from './questions';
+import GenerateQuestions from './generate-questions';
+
 export default function Set() {
   const { setId } = useParams<{ setId: string }>();
 
@@ -47,8 +50,19 @@ export default function Set() {
   }
 
   return (
-    <div>
-      <h1>{set.name}</h1>
+    <div
+      className={`rounded-lg ${colors.background.secondary} my-4 p-8 shadow-lg ${colors.text.primary}`}
+    >
+      <div className="flex justify-between">
+        <h1 className="mb-4 text-2xl font-bold">{set.name}</h1>
+        <div className={`${colors.text.muted} text-md`}>
+          {set.createdAt.slice(0, 10)}
+        </div>
+      </div>
+      <div className="space-y-4">
+        <Questions />
+        <GenerateQuestions />
+      </div>
     </div>
   );
 }
