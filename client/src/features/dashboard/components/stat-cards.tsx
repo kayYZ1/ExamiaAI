@@ -24,9 +24,7 @@ export default function StatCards() {
             <GraduationCap className={`h-6 w-6 ${colors.primary.text}`} />
           </div>
           <div>
-            <p className={`text-sm ${colors.text.muted}`}>
-              Sets available
-            </p>
+            <p className={`text-sm ${colors.text.muted}`}>Sets used</p>
             <span
               className={`text-2xl font-semibold ${colors.text.primary}`}
             >

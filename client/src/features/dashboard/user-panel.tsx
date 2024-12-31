@@ -3,7 +3,7 @@ import { CheckCircle } from 'lucide-react';
 
 import { getUser } from '@/lib/queries';
 import { colors } from '@/styles/theme';
-import Sets from './sets';
+import Sets from './components/sets';
 
 export default function UserPanel() {
   const { data: user, isLoading } = useQuery({
