@@ -29,6 +29,20 @@
       "when": 1734629125017,
       "tag": "0003_serious_skin",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1735469004236,
+      "tag": "0004_curvy_black_knight",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1735469588289,
+      "tag": "0005_famous_electro",
+      "breakpoints": true
     }
   ]
 }

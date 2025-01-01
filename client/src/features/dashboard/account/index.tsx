@@ -30,7 +30,7 @@ export default function Account() {
   const { mutate: updateMutate, isPending: updatePending } = useMutation({
     mutationKey: ['user'],
     mutationFn: async (data: Update) => {
-      await api.patch('/user/update', data);
+      await api.patch('/user', data);
     },
   });
 
@@ -80,14 +80,14 @@ export default function Account() {
           <h3 className={`${colors.text.secondary} text-xl font-medium`}>
             Personal Information
           </h3>
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="flex-col space-y-2">
               <input
                 type="text"
                 id="alias"
                 placeholder="Your Alias"
                 {...register('alias')}
-                className={`w-full px-1 py-2 ${colors.background.main} ${colors.text.primary} border-b-2 border-slate-400 focus:outline-none`}
+                className={`w-full rounded-lg border p-4 ${colors.background.main} ${colors.text.muted} ${colors.border} focus:outline-none focus:ring-2 focus:ring-indigo-900`}
               />
               {errors.alias && (
                 <p className={`text-sm ${colors.text.danger} mt-1`}>
@@ -100,7 +100,7 @@ export default function Account() {
                 disabled
                 placeholder="you@example.com"
                 {...register('email')}
-                className={`w-full px-1 py-2 ${colors.background.main} ${colors.text.muted} border-b-2 border-slate-400 focus:outline-none`}
+                className={`w-full rounded-lg border p-4 ${colors.background.main} ${colors.text.muted} ${colors.border} focus:outline-none focus:ring-2 focus:ring-indigo-900`}
               />
               {errors.email && (
                 <p className={`text-sm ${colors.text.danger} mt-1`}>
@@ -111,7 +111,7 @@ export default function Account() {
             <div className="flex-col space-y-8">
               <select
                 name="plan"
-                className={`w-full px-1 py-2 ${colors.background.main} ${colors.text.primary} border-b-2 border-slate-400 focus:outline-none`}
+                className={`w-full rounded-lg border p-4 ${colors.background.main} ${colors.text.muted} ${colors.border} focus:outline-none focus:ring-2 focus:ring-indigo-900`}
               >
                 <option value={Plan.Basic}>{Plan.Basic}</option>
                 <option value={Plan.Premium} disabled>

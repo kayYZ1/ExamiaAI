@@ -1,14 +1,16 @@
 import { Hono } from 'hono';
 import { zValidator } from '@hono/zod-validator';
 import { z } from 'zod';
-import { decode, jwt, sign, verify } from 'hono/jwt';
+import { randomUUID } from 'crypto';
+import { jwt, sign, verify } from 'hono/jwt';
 import type { JwtVariables } from 'hono/jwt';
 import { eq } from 'drizzle-orm';
-import { deleteCookie, getCookie, setCookie } from 'hono/cookie';
+import { deleteCookie, setCookie } from 'hono/cookie';
 import { createTransport } from 'nodemailer';
 
-import { Users } from '../db/schema';
+import { User } from '../db/schema';
 import { db } from '../db/turso';
+import { getUserIdFromCookie } from '../shared/utils';
 
 const auth = new Hono<{ Variables: JwtVariables }>();
 
@@ -25,18 +27,23 @@ auth.post(
     const { email } = body;
 
     const user = await db
-      .select({ email: Users.email, id: Users.id })
-      .from(Users)
-      .where(eq(Users.email, email));
+      .select({ email: User.email, id: User.id })
+      .from(User)
+      .where(eq(User.email, email));
 
-    if (user.length === 0) {
-      return c.json({ message: 'User not found' }, 404);
+    let userId: string;
+
+    if (!user || user.length === 0) {
+      userId = randomUUID();
+      await db.insert(User).values({ id: userId, email });
+    } else {
+      userId = user[0].id;
     }
 
     const jwtToken = await sign(
       {
         email,
-        id: user[0].id,
+        id: userId,
         exp: Math.floor(Date.now() / 1000) + 60 * 5, //5 minutes for email magic link login
       },
       process.env.JWT_SECRET as string
@@ -57,7 +64,7 @@ auth.post(
         from: 'examia@mail.com',
         to: email,
         subject: 'Magic link login',
-        text: `Sign in link: ${magicLink}`,
+        text: `${magicLink}`,
       };
 
       await transporter.sendMail(mailOptions);
@@ -114,19 +121,19 @@ auth.get('/validate-cookie', (c) => {
 });
 
 auth.get('/profile', async (c) => {
-  const authCookie = getCookie(c, 'auth') as string;
-  const { payload } = decode(authCookie);
+  const userId = getUserIdFromCookie(c);
 
   const user = await db
     .select({
-      id: Users.id,
-      email: Users.email,
-      tokens: Users.tokens,
-      plan: Users.plan,
-      alias: Users.alias,
+      id: User.id,
+      email: User.email,
+      sets: User.sets,
+      tokens: User.tokens,
+      plan: User.plan,
+      alias: User.alias,
     })
-    .from(Users)
-    .where(eq(Users.id, payload.id as string));
+    .from(User)
+    .where(eq(User.id, userId));
 
   if (!user) {
     return c.json({ message: 'User does not exist' }, 404);

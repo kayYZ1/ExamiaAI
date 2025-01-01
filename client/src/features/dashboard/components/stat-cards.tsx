@@ -4,12 +4,18 @@ import { GraduationCap, BookOpen, Users, Calendar } from 'lucide-react';
 import { colors } from '@/styles/theme';
 import { getUser } from '@/lib/queries';
 import Spinner from '@/shared/components/ui/spinner';
+import type { User } from '@/shared/ts/types';
 
 export default function StatCards() {
-  const { data: user, isLoading } = useQuery({
+  const {
+    data: user,
+    isPending,
+    error,
+  } = useQuery<User>({
     queryKey: ['user'],
     queryFn: getUser,
   });
+
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
       <div className={`rounded-md ${colors.background.secondary} p-6`}>
@@ -18,12 +24,12 @@ export default function StatCards() {
             <GraduationCap className={`h-6 w-6 ${colors.primary.text}`} />
           </div>
           <div>
-            <p className={`text-sm ${colors.text.muted}`}>
-              Sets available
-            </p>
-            <p className={`text-2xl font-semibold ${colors.text.primary}`}>
-              1/3
-            </p>
+            <p className={`text-sm ${colors.text.muted}`}>Sets used</p>
+            <span
+              className={`text-2xl font-semibold ${colors.text.primary}`}
+            >
+              {isPending ? <Spinner /> : user?.sets + '/3'}
+            </span>
           </div>
         </div>
       </div>
@@ -39,7 +45,7 @@ export default function StatCards() {
             <span
               className={`text-2xl font-semibold ${colors.text.primary}`}
             >
-              {isLoading ? <Spinner /> : user.tokens + '/15'}
+              {isPending ? <Spinner /> : user?.tokens + '/15'}
             </span>
           </div>
         </div>
@@ -67,11 +73,16 @@ export default function StatCards() {
             <span
               className={`text-2xl font-semibold ${colors.text.primary}`}
             >
-              {isLoading ? <Spinner /> : user.plan}
+              {isPending ? <Spinner /> : user?.plan}
             </span>
           </div>
         </div>
       </div>
+      {error && (
+        <p className={`${colors.text.danger}`}>
+          Something went wrong please try again
+        </p>
+      )}
     </div>
   );
 }

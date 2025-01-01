@@ -3,6 +3,7 @@ import { cors } from 'hono/cors';
 
 import user from './routes/user';
 import auth from './routes/auth';
+import set from './routes/set';
 
 const app = new Hono();
 
@@ -24,6 +25,7 @@ app.use(
 
 app.route('/user', user);
 app.route('/auth', auth);
+app.route('/set', set);
 
 export default {
   port: 7676,

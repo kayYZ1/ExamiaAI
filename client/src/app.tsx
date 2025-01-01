@@ -9,8 +9,9 @@ const Auth = lazy(() => import('./features/auth'));
 const SignIn = lazy(() => import('./features/auth/sign-in'));
 const Verify = lazy(() => import('./features/auth/verify'));
 const Dashboard = lazy(() => import('./features/dashboard/index'));
-const UserPanel = lazy(() => import('./features/dashboard/user-panel'));
-const Account = lazy(() => import('./features/dashboard/account'))
+const Panel = lazy(() => import('./features/dashboard/panel'));
+const Account = lazy(() => import('./features/dashboard/account'));
+const Set = lazy(() => import('./features/dashboard/set'));
 
 export default function App() {
   return (
@@ -37,8 +38,9 @@ export default function App() {
             </AuthGuard>
           }
         >
-          <Route path="" element={<UserPanel />} />
+          <Route path="" element={<Panel />} />
           <Route path="account" element={<Account />} />
+          <Route path="set/:setId" element={<Set />} />
         </Route>
       </Routes>
     </BrowserRouter>

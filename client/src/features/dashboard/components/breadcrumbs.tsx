@@ -7,7 +7,9 @@ export default function Breadcrumbs() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const paths = location.pathname.split('/').filter((path) => path);
+  const paths = location.pathname
+    .split('/')
+    .filter((path) => /^[a-zA-Z]+$/.test(path));
 
   return (
     <div className="py-4">
