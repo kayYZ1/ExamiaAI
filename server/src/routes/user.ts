@@ -12,31 +12,6 @@ import { getUserIdFromCookie } from '../shared/utils';
 
 const user = new Hono<{ Variables: JwtVariables }>();
 
-/* Leave for testing
-user.get('/', async (c) => {
-  const result = await db.select().from(User).all();
-  return c.json(result, 200);
-});
-*/
-
-user.post(
-  '/',
-  zValidator(
-    'json',
-    z.object({
-      email: z.string().email(),
-    })
-  ),
-  async (c) => {
-    const { email } = c.req.valid('json');
-    const id = randomUUID();
-
-    await db.insert(User).values({ id, email });
-
-    return c.json(`User ${email} created.`, 201);
-  }
-);
-
 user.use(
   '*',
   jwt({
@@ -64,5 +39,30 @@ user.patch(
     return c.json({ message: `User ${email} updated` }, 200);
   }
 );
+
+/* Leave for testing
+user.get('/', async (c) => {
+  const result = await db.select().from(User).all();
+  return c.json(result, 200);
+});
+
+
+user.post(
+  '/',
+  zValidator(
+    'json',
+    z.object({
+      email: z.string().email(),
+    })
+  ),
+  async (c) => {
+    const { email } = c.req.valid('json');
+    const id = randomUUID();
+
+    await db.insert(User).values({ id, email });
+
+    return c.json(`User ${email} created.`, 201);
+  }
+);*/
 
 export default user;

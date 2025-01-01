@@ -1,6 +1,7 @@
 import { Hono } from 'hono';
 import { zValidator } from '@hono/zod-validator';
 import { z } from 'zod';
+import { randomUUID } from 'crypto';
 import { jwt, sign, verify } from 'hono/jwt';
 import type { JwtVariables } from 'hono/jwt';
 import { eq } from 'drizzle-orm';
@@ -30,14 +31,19 @@ auth.post(
       .from(User)
       .where(eq(User.email, email));
 
-    if (!user) {
-      return c.json({ message: 'User not found' }, 404);
+    let userId: string;
+
+    if (!user || user.length === 0) {
+      userId = randomUUID();
+      await db.insert(User).values({ id: userId, email });
+    } else {
+      userId = user[0].id;
     }
 
     const jwtToken = await sign(
       {
         email,
-        id: user[0].id,
+        id: userId,
         exp: Math.floor(Date.now() / 1000) + 60 * 5, //5 minutes for email magic link login
       },
       process.env.JWT_SECRET as string
@@ -58,7 +64,7 @@ auth.post(
         from: 'examia@mail.com',
         to: email,
         subject: 'Magic link login',
-        text: `Sign in link: ${magicLink}`,
+        text: `${magicLink}`,
       };
 
       await transporter.sendMail(mailOptions);
