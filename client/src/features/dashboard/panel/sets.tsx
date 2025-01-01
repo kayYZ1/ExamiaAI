@@ -5,7 +5,8 @@ import { colors } from '@/styles/theme';
 import { getSets } from '@/lib/queries';
 import type { Set } from '@/shared/ts/types';
 import Spinner from '@/shared/components/ui/spinner';
-import Modal from '@/shared/components/ui/modal';
+
+import CreateSetModal from './components/modals/create-set';
 
 export default function Sets() {
   const navigate = useNavigate();
@@ -44,7 +45,7 @@ export default function Sets() {
           <h2 className="text-xl font-bold">{set.name}</h2>
         </div>
       ))}
-      {sets.length !== 3 && <Modal />}
+      {sets.length !== 3 && <CreateSetModal />}
     </div>
   );
 }
