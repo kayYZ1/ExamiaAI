@@ -70,7 +70,10 @@ auth.post(
       await transporter.sendMail(mailOptions);
       return c.json({ message: `Email sent to ${email}` });
     } catch (error) {
-      return c.json({ message: 'Failed to send email', error: error }, 500);
+      return c.json(
+        { message: 'Failed to send email', error: error },
+        500
+      );
     }
   }
 );
@@ -102,7 +105,10 @@ auth.get('/verify', async (c) => {
       sameSite: 'Lax',
     });
 
-    return c.json({ message: 'Succesfully validated. Check cookies.' }, 200);
+    return c.json(
+      { message: 'Succesfully validated. Check cookies.' },
+      200
+    );
   } catch (err) {
     return c.json({ message: 'Invalid or expired token' }, 401);
   }

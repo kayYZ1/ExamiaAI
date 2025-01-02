@@ -79,7 +79,10 @@ set.post(
       .where(eq(User.id, userId));
 
     if (user[0].sets === 3) {
-      return c.json({ message: 'You have reached the limit of sets' }, 400);
+      return c.json(
+        { message: 'You have reached the limit of sets' },
+        400
+      );
     }
 
     const body = c.req.valid('json');

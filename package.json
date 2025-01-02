@@ -7,8 +7,8 @@
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
     "lint": "bun eslint .",
-    "prepare": "husky",
-    "prettier": "prettier --write \"**/*.{ts,js,mjs}\""
+    "prettier": "prettier --write \"**/*.{ts,js,mjs,tsx,jsx,html}\"",
+    "prepare": "husky"
   },
   "dependencies": {
     "@hono/zod-validator": "^0.4.2",
@@ -26,6 +26,8 @@
     "eslint": "^9.17.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
-    "prettier": "^3.4.2"
+    "husky": "^9.1.7",
+    "prettier": "^3.4.2",
+    "prettier-plugin-tailwindcss": "^0.6.9"
   }
 }
