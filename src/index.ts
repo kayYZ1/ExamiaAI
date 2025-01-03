@@ -7,10 +7,6 @@ import set from './routes/set';
 
 const app = new Hono();
 
-app.get('/', (c) => {
-  return c.text('Hello Hono!');
-});
-
 app.use(
   '*',
   cors({
@@ -22,6 +18,10 @@ app.use(
     credentials: true,
   })
 );
+
+app.get('/', (c) => {
+  return c.text('Hello Hono!');
+});
 
 app.route('/user', user);
 app.route('/auth', auth);
