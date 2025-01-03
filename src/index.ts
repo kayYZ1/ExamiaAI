@@ -4,6 +4,7 @@ import { cors } from 'hono/cors';
 import user from './routes/user';
 import auth from './routes/auth';
 import set from './routes/set';
+import question from './routes/question';
 
 const app = new Hono();
 
@@ -26,8 +27,10 @@ app.get('/', (c) => {
 app.route('/user', user);
 app.route('/auth', auth);
 app.route('/set', set);
+app.route('/question', question);
 
 export default {
   port: 7676,
   fetch: app.fetch,
+  idleTimeout: 15,
 };

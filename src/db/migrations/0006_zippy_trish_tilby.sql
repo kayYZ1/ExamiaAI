@@ -1,0 +1,1 @@
+ALTER TABLE `questions` ADD `answers` text NOT NULL;
