@@ -1,14 +1,15 @@
 import { Hono } from 'hono';
 import { JwtVariables } from 'hono/jwt';
 import { jwt } from 'hono/jwt';
-import { eq } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
 import { zValidator } from '@hono/zod-validator';
 import { z } from 'zod';
 import { randomUUID } from 'crypto';
 
 import generateQuestions from '../lib/ai';
 
-import { Question, Set } from '../db/schema';
+import { Question, Set, User } from '../db/schema';
+import { getUserIdFromCookie } from '../shared/utils';
 import { db } from '../db/turso';
 
 const question = new Hono<{ Variables: JwtVariables }>();
@@ -19,6 +20,26 @@ question.use('*', (c, next) => {
     cookie: 'auth',
   });
   return jwtMiddleware(c, next);
+});
+
+question.get('/:id', async (c) => {
+  const setId = c.req.param('id');
+
+  const questions = await db
+    .select({
+      id: Question.id,
+      question: Question.question,
+      answers: Question.answers,
+      answer: Question.answer,
+    })
+    .from(Question)
+    .where(eq(Question.setId, setId));
+
+  if (!questions || questions.length === 0) {
+    return c.json({ message: 'No questions found' }, 404);
+  }
+
+  return c.json(questions, 200);
 });
 
 question.post(
@@ -32,20 +53,32 @@ question.post(
     })
   ),
   async (c) => {
+    const userId = getUserIdFromCookie(c);
     const setId = c.req.param('id');
     const body = c.req.valid('json');
+
     const { numOfQuestions, level, topic } = body;
+
+    const user = await db
+      .select({ tokens: User.tokens })
+      .from(User)
+      .where(eq(User.id, userId))
+      .limit(1);
+
+    if (!user || user.length === 0) {
+      return c.json({ message: 'User not found' }, 404);
+    }
 
     const set = await db
       .select({
         name: Set.name,
       })
       .from(Set)
-      .where(eq(Set.id, setId))
+      .where(and(eq(Set.id, setId), eq(Set.userId, userId)))
       .limit(1);
 
-    if (!set) {
-      return c.json({ message: 'Set not found' }, 404);
+    if (!set || set.length === 0) {
+      return c.json({ message: 'Unauthorized action' }, 403);
     }
 
     const response = await generateQuestions(
@@ -68,6 +101,11 @@ question.post(
         answer: question.answer,
       });
     }
+
+    await db
+      .update(User)
+      .set({ sets: user[0].tokens - 1 })
+      .where(eq(User.id, userId));
 
     return c.json(response, 201);
   }

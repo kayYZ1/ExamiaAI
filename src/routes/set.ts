@@ -32,10 +32,9 @@ set.get('/', async (c) => {
       updatedAt: Set.updatedAt,
     })
     .from(Set)
-    .where(eq(Set.userId, userId))
-    .limit(1);
+    .where(eq(Set.userId, userId));
 
-  if (!sets) {
+  if (!sets || sets.length === 0) {
     return c.json({ message: 'No sets found' }, 404);
   }
 
@@ -57,8 +56,8 @@ set.get('/:id', async (c) => {
     .from(Set)
     .where(and(eq(Set.userId, userId), eq(Set.id, setId)));
 
-  if (!set) {
-    return c.json({ message: 'Set not found' }, 404);
+  if (!set || set.length === 0) {
+    return c.json({ message: 'Unauthorized action' }, 404);
   }
 
   return c.json(set[0], 200);
@@ -156,6 +155,11 @@ set.delete('/:id', async (c) => {
     await db
       .delete(Set)
       .where(and(eq(Set.id, setId), eq(Set.userId, user[0].id)));
+
+    await db
+      .update(User)
+      .set({ sets: user[0].sets - 1 })
+      .where(eq(User.id, userId));
   } catch (error) {
     return c.json({ message: `Error: ${error}` }, 400);
   } finally {
