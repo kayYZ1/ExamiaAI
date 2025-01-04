@@ -12,6 +12,7 @@ const schema = z.object({
     .min(5, 'Please be more specific')
     .max(400, "That's a lot of words"),
   numberOfQuestions: z.enum(['1', '5', '10']),
+  level: z.enum(['elementary', 'high school', 'college']),
 });
 
 type Prompt = z.infer<typeof schema>;
@@ -35,7 +36,7 @@ export default function GenerateQuestions() {
           <input
             type="text"
             id="prompt"
-            placeholder="Additional info you want to include"
+            placeholder="Questions theme"
             {...register('prompt')}
             className={`flex-grow rounded-lg border p-4 text-sm ${colors.background.main} ${colors.text.muted} ${colors.border} focus:outline-none focus:ring-2 focus:ring-indigo-900`}
           />
@@ -49,6 +50,15 @@ export default function GenerateQuestions() {
             <option value="10" disabled>
               10 questions
             </option>
+          </select>
+          <select
+            id="level"
+            {...register('level')}
+            className={`rounded-lg border p-4 text-sm ${colors.background.main} ${colors.text.muted} ${colors.border} focus:outline-none focus:ring-2 focus:ring-indigo-900`}
+          >
+            <option value="elementary">Elementary</option>
+            <option value="high school">High school</option>
+            <option value="college">College</option>
           </select>
           <Button type="submit" className="rounded-lg">
             <Send className="size-4" />

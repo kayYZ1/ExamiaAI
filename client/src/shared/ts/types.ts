@@ -15,3 +15,10 @@ export type Set = {
   userId: string;
   createdAt: string;
 };
+
+export type Question = {
+  id: string;
+  question: string;
+  answers: string;
+  answer: string;
+};
