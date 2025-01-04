@@ -36,6 +36,7 @@ export const Question = sqliteTable('questions', {
     .notNull()
     .references(() => Set.id),
   question: text('question').notNull(),
+  answers: text('answers').notNull(),
   answer: text('answer').notNull(),
   createdAt: text('createdAt')
     .default(sql`(CURRENT_TIMESTAMP)`)

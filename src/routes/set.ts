@@ -29,12 +29,12 @@ set.get('/', async (c) => {
       name: Set.name,
       userId: Set.userId,
       createdAt: Set.createdAt,
+      updatedAt: Set.updatedAt,
     })
     .from(Set)
-    .where(eq(Set.userId, userId))
-    .all();
+    .where(eq(Set.userId, userId));
 
-  if (!sets) {
+  if (!sets || sets.length === 0) {
     return c.json({ message: 'No sets found' }, 404);
   }
 
@@ -51,12 +51,13 @@ set.get('/:id', async (c) => {
       name: Set.name,
       userId: Set.userId,
       createdAt: Set.createdAt,
+      updatedAt: Set.updatedAt,
     })
     .from(Set)
     .where(and(eq(Set.userId, userId), eq(Set.id, setId)));
 
-  if (!set) {
-    return c.json({ message: 'Set not found' }, 404);
+  if (!set || set.length === 0) {
+    return c.json({ message: 'Unauthorized action' }, 404);
   }
 
   return c.json(set[0], 200);
@@ -79,7 +80,10 @@ set.post(
       .where(eq(User.id, userId));
 
     if (user[0].sets === 3) {
-      return c.json({ message: 'You have reached the limit of sets' }, 400);
+      return c.json(
+        { message: 'You have reached the limit of sets' },
+        400
+      );
     }
 
     const body = c.req.valid('json');
@@ -96,5 +100,71 @@ set.post(
     return c.json(`Set ${name} created.`, 201);
   }
 );
+
+set.patch(
+  '/:id',
+  zValidator(
+    'json',
+    z.object({
+      name: z.string().min(3).max(25),
+    })
+  ),
+  async (c) => {
+    const userId = getUserIdFromCookie(c);
+    const setId = c.req.param('id');
+
+    const body = c.req.valid('json');
+    const { name } = body;
+
+    const user = await db
+      .select({ sets: User.sets, id: User.id })
+      .from(User)
+      .where(eq(User.id, userId));
+
+    if (!user) {
+      return c.json({ message: 'User does not exist' }, 404);
+    }
+
+    try {
+      await db
+        .update(Set)
+        .set({ name, updatedAt: new Date() })
+        .where(and(eq(Set.id, setId), eq(Set.userId, user[0].id)));
+    } catch (error) {
+      return c.json({ message: `Error: ${error}` }, 400);
+    } finally {
+      return c.json({ message: `Set ${setId} has been updated` }, 201);
+    }
+  }
+);
+
+set.delete('/:id', async (c) => {
+  const userId = getUserIdFromCookie(c);
+  const setId = c.req.param('id');
+
+  const user = await db
+    .select({ sets: User.sets, id: User.id })
+    .from(User)
+    .where(eq(User.id, userId));
+
+  if (!user) {
+    return c.json({ message: 'User does not exist' }, 404);
+  }
+
+  try {
+    await db
+      .delete(Set)
+      .where(and(eq(Set.id, setId), eq(Set.userId, user[0].id)));
+
+    await db
+      .update(User)
+      .set({ sets: user[0].sets - 1 })
+      .where(eq(User.id, userId));
+  } catch (error) {
+    return c.json({ message: `Error: ${error}` }, 400);
+  } finally {
+    return c.json({ message: `Set ${setId} has been deleted` }, 201);
+  }
+});
 
 export default set;

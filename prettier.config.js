@@ -1,5 +1,5 @@
 export default {
-  printWidth: 80,
+  printWidth: 75,
   tabWidth: 2,
   useTabs: false,
   semi: true,
@@ -8,4 +8,5 @@ export default {
   bracketSpacing: true,
   arrowParens: 'always',
   endOfLine: 'lf',
+  plugins: ['prettier-plugin-tailwindcss'],
 };
