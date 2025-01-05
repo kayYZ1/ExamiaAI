@@ -29,7 +29,9 @@ export default function Questions() {
     return (
       <div className="flex h-96 items-center justify-center">
         <p className={`${colors.text.danger} text-center`}>
-          Something went wrong, please try again
+          {error.message
+            ? error.message
+            : 'Something went wrong please try again later'}
         </p>
       </div>
     );
@@ -41,20 +43,28 @@ export default function Questions() {
         Questions
       </h1>
       <ul>
-        {questions.map((question) => (
-          <li
-            key={question.id}
-            className={`mb-4 rounded p-4 ${colors.background.secondary} ${colors.border} border`}
-          >
-            <h2 className={`text-lg font-semibold ${colors.text.primary}`}>
-              {question.question}
-            </h2>
-            <p className={`mb-2 ${colors.text.secondary}`}>
-              {question.answer}
-            </p>
-            <p className={`${colors.text.muted}`}>{question.answers}</p>
-          </li>
-        ))}
+        {questions.length !== 0 ? (
+          questions.map((question) => (
+            <li
+              key={question.id}
+              className={`mb-4 rounded p-4 ${colors.background.secondary} ${colors.border} border`}
+            >
+              <h2
+                className={`text-lg font-semibold ${colors.text.primary}`}
+              >
+                {question.question}
+              </h2>
+              <p className={`mb-2 ${colors.text.secondary}`}>
+                {question.answer}
+              </p>
+              <p className={`${colors.text.muted}`}>{question.answers}</p>
+            </li>
+          ))
+        ) : (
+          <p className={`${colors.text.muted}`}>
+            No questions yet...Generate some!
+          </p>
+        )}
       </ul>
     </div>
   );

@@ -35,7 +35,7 @@ question.get('/:id', async (c) => {
     .from(Question)
     .where(eq(Question.setId, setId));
 
-  if (!questions || questions.length === 0) {
+  if (!questions) {
     return c.json({ message: 'No questions found' }, 404);
   }
 
