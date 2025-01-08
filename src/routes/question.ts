@@ -104,7 +104,7 @@ question.post(
 
     await db
       .update(User)
-      .set({ sets: user[0].tokens - 1 })
+      .set({ tokens: user[0].tokens - 1 })
       .where(eq(User.id, userId));
 
     return c.json(response, 201);

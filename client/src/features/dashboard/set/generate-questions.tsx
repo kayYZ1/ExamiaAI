@@ -58,9 +58,8 @@ export default function GenerateQuestions() {
             className={`flex-grow rounded-lg border p-4 text-sm ${colors.background.main} ${colors.text.muted} ${colors.border} focus:outline-none focus:ring-2 focus:ring-indigo-900`}
           />
           <select
-            id="numberOfQuestions"
+            id="numOfQuestions"
             {...register('numOfQuestions')}
-            defaultValue={1}
             className={`rounded-lg border p-4 text-sm ${colors.background.main} ${colors.text.muted} ${colors.border} focus:outline-none focus:ring-2 focus:ring-indigo-900`}
           >
             <option value={1}>1 question</option>
