@@ -15,7 +15,10 @@ const schema = z.object({
     .string()
     .min(5, 'Please be more specific')
     .max(400, "That's a lot of words"),
-  numOfQuestions: z.number(),
+  numOfQuestions: z
+    .number()
+    .min(1, 'Number of questions must be at least 1')
+    .max(10, 'Number of questions cannot exceed 10'),
   level: z.enum(['elementary', 'high school', 'college']),
 });
 
@@ -59,7 +62,9 @@ export default function GenerateQuestions() {
           />
           <select
             id="numOfQuestions"
-            {...register('numOfQuestions')}
+            {...register('numOfQuestions', {
+              valueAsNumber: true,
+            })}
             className={`rounded-lg border p-4 text-sm ${colors.background.main} ${colors.text.muted} ${colors.border} focus:outline-none focus:ring-2 focus:ring-indigo-900`}
           >
             <option value={1}>1 question</option>
