@@ -35,7 +35,7 @@ question.get('/:id', async (c) => {
     .from(Question)
     .where(eq(Question.setId, setId));
 
-  if (!questions || questions.length === 0) {
+  if (!questions) {
     return c.json({ message: 'No questions found' }, 404);
   }
 
@@ -104,7 +104,7 @@ question.post(
 
     await db
       .update(User)
-      .set({ sets: user[0].tokens - 1 })
+      .set({ tokens: user[0].tokens - 1 })
       .where(eq(User.id, userId));
 
     return c.json(response, 201);

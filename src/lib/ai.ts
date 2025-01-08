@@ -22,11 +22,9 @@ const generateQuestions = async (
           Create ${numOfQuestions} question(s) about ${topic} on ${level} academic level. 
           FORMAT HAS TO BE LIKE THIS:
           Question:[question]
-          Answers:[answers]
-          Answer:[answer]
-          "" -> if there are more questions
-          Answers can be true/false or multiple choice(maximum 4). Answer is the correct answer.
-          RETURN ONLY THIS FORMAT NOTHING ELSE NO ORDERING NO ADDITIONAL TEXT.
+          Answers:[answers separated by comma all in one line can be true/false or multiple choice (max 4)]
+          Answer:[answer correct answer]
+          ALWAYS !!! RETURN THE DATA IN THIS FORMAT NO ADDITIONAL STUFF JUST THAT.
         `,
       },
     ],
@@ -44,13 +42,16 @@ const generateQuestions = async (
 
   try {
     const response = completion.choices[0].message.content?.split('\n');
+
     if (!response) {
       return response;
     }
 
+    console.log(response);
+
     const formattedResponse = [];
 
-    for (let i = 0; i < response.length; i += 4) {
+    for (let i = 0; i < response.length; i += 3) {
       formattedResponse.push({
         question: response[i].split('Question:')[1].trim(),
         answers: response[i + 1].split('Answers:')[1].trim(),
