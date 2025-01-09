@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod/src/zod.js';
 import { Send } from 'lucide-react';
@@ -39,12 +39,17 @@ export default function GenerateQuestions() {
     resolver: zodResolver(schema),
   });
 
-  const { mutate, isPending, error } = useMutation({
+  const queryClient = useQueryClient();
+  const { mutate, isPending, isSuccess, error } = useMutation({
     mutationKey: ['questions', setId as string],
     mutationFn: async (data: Prompt) => {
       await api.post(`/question/${setId}`, data);
     },
   });
+
+  if (isSuccess) {
+    queryClient.invalidateQueries({ queryKey: ['questions'] });
+  }
 
   return (
     <div className="flex justify-between pt-4">

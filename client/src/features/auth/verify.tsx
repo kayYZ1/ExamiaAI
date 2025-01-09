@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from 'react-router';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 import api from '@/lib/api';
 import { colors } from '@/styles/theme';
@@ -7,6 +7,8 @@ import { colors } from '@/styles/theme';
 export default function Verify() {
   const { token } = useParams();
   const navigate = useNavigate();
+
+  const queryClient = useQueryClient();
   const { isSuccess, isLoading, error } = useQuery({
     queryKey: ['auth', token],
     queryFn: async () => {
@@ -17,6 +19,7 @@ export default function Verify() {
 
   if (isSuccess) {
     setTimeout(() => {
+      queryClient.invalidateQueries({ queryKey: ['auth'] });
       navigate('/dashboard');
     }, 1000);
   }
