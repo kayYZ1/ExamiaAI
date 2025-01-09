@@ -34,7 +34,7 @@ set.get('/', async (c) => {
     .from(Set)
     .where(eq(Set.userId, userId));
 
-  if (!sets || sets.length === 0) {
+  if (!sets) {
     return c.json({ message: 'No sets found' }, 404);
   }
 

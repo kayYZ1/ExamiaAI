@@ -27,7 +27,11 @@ export default function Account() {
     queryFn: getUser,
   });
 
-  const { mutate: updateMutate, isPending: updatePending } = useMutation({
+  const {
+    mutate: updateMutate,
+    isPending: updatePending,
+    isSuccess,
+  } = useMutation({
     mutationKey: ['user'],
     mutationFn: async (data: Update) => {
       await api.patch('/user', data);
@@ -67,7 +71,7 @@ export default function Account() {
         <button
           onClick={logoutHandler}
           disabled={logoutPending}
-          className={`${colors.primary.main} ${colors.text.primary} ml-auto h-12 w-24 rounded-md`}
+          className={`ml-auto ${colors.primary.main} rounded-md px-4 py-2 ${colors.text.primary} } focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2`}
         >
           {logoutPending ? <Spinner /> : 'Logout'}
         </button>
@@ -138,6 +142,9 @@ export default function Account() {
           </button>
         </div>
       </form>
+      {isSuccess && (
+        <p className={`${colors.text.success}`}>Account updated</p>
+      )}
     </div>
   );
 }
