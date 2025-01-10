@@ -6,6 +6,8 @@ import { getQuestions } from '@/lib/queries';
 import { colors } from '@/styles/theme';
 import { Question } from '@/shared/ts/types';
 
+import RemoveQuestionModal from './components/remove-question';
+
 export default function Questions() {
   const { setId } = useParams();
   const {
@@ -49,11 +51,17 @@ export default function Questions() {
               key={question.id}
               className={`mb-4 rounded p-4 ${colors.background.secondary} ${colors.border} border`}
             >
-              <h2
-                className={`text-lg font-semibold ${colors.text.primary}`}
-              >
-                {question.question}
-              </h2>
+              <div className="flex justify-between">
+                <h2
+                  className={`text-lg font-semibold ${colors.text.primary}`}
+                >
+                  {question.question}
+                </h2>
+                <RemoveQuestionModal
+                  setId={setId as string}
+                  questionId={question.id}
+                />
+              </div>
               <p className={`mb-2 ${colors.text.secondary}`}>
                 {question.answer}
               </p>
