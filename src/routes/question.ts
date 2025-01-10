@@ -139,13 +139,9 @@ question.delete('/:id/:questionId', async (c) => {
   }
 
   try {
-    const result = await db
+    await db
       .delete(Question)
       .where(and(eq(Question.setId, setId), eq(Question.id, questionId)));
-
-    if (result.rows.length === 0) {
-      return c.json({ message: 'Question not found' }, 404);
-    }
 
     return c.json({ message: `Question ${questionId} deleted` }, 200);
   } catch (error) {
