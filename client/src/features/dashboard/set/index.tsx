@@ -8,6 +8,7 @@ import { colors } from '@/styles/theme';
 
 import Questions from './questions';
 import GenerateQuestions from './generate-questions';
+import RemoveSetModal from './components/remove-set';
 
 export default function Set() {
   const { setId } = useParams<{ setId: string }>();
@@ -27,7 +28,7 @@ export default function Set() {
     isPending,
     error,
   } = useQuery<Set>({
-    queryKey: ['set', setId],
+    queryKey: ['sets', setId],
     queryFn: () => getSet(setId),
   });
 
@@ -55,8 +56,11 @@ export default function Set() {
     >
       <div className="flex justify-between">
         <h1 className="mb-4 text-2xl font-bold">{set.name}</h1>
-        <div className={`${colors.text.muted} text-md`}>
-          {set.createdAt.slice(0, 10)}
+        <div className="flex flex-row gap-4">
+          <p className={`${colors.text.muted} text-md`}>
+            {set.createdAt.slice(0, 10)}
+          </p>
+          <RemoveSetModal setId={setId} />
         </div>
       </div>
       <div className="space-y-4">

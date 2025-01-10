@@ -6,7 +6,7 @@ import { getSets } from '@/lib/queries';
 import type { Set } from '@/shared/ts/types';
 import Spinner from '@/shared/components/ui/spinner';
 
-import CreateSetModal from './components/modals/create-set';
+import CreateSetModal from './components/create-set';
 
 export default function Sets() {
   const navigate = useNavigate();

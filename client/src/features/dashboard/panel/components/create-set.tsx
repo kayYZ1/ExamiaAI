@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod/src/zod.js';
 import { Plus, XIcon } from 'lucide-react';
@@ -19,12 +19,17 @@ type CreateSet = z.infer<typeof schema>;
 export default function CreateSetModal() {
   const [isOpen, setIsOpen] = useState(false);
 
-  const { mutate, isPending, error } = useMutation({
+  const queryClient = useQueryClient();
+  const { mutate, isPending, isSuccess, error } = useMutation({
     mutationKey: ['sets'],
     mutationFn: async (data: CreateSet) => {
       await api.post('/set', data);
     },
   });
+
+  if (isSuccess) {
+    queryClient.invalidateQueries({ queryKey: ['sets'] });
+  }
 
   const {
     register,
