@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { XIcon, TrashIcon } from 'lucide-react';
 
@@ -6,32 +7,28 @@ import { colors } from '@/styles/theme';
 import api from '@/lib/api';
 import Spinner from '@/shared/components/ui/spinner';
 
-export default function RemoveQuestionModal({
-  setId,
-  questionId,
-}: {
-  setId: string;
-  questionId: string;
-}) {
+export default function RemoveSetModal({ setId }: { setId: string }) {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
 
   const queryClient = useQueryClient();
   const { mutate, isPending, isSuccess, error } = useMutation({
-    mutationKey: ['questions', setId, questionId],
+    mutationKey: ['sets', setId],
     mutationFn: async () => {
-      await api.delete(`/question/${setId}/${questionId}`);
+      await api.delete(`/set/${setId}`);
     },
   });
 
   if (isSuccess) {
-    queryClient.invalidateQueries({ queryKey: ['questions'] });
+    queryClient.invalidateQueries({ queryKey: ['sets'] });
+    navigate('/dashboard');
   }
 
   return (
     <>
       <div
         key="placeholder"
-        className={`flex cursor-pointer items-center justify-center rounded-lg bg-slate-800 text-indigo-400`}
+        className={`cursor-pointer rounded-sm bg-slate-800 text-indigo-400`}
         onClick={() => setIsOpen(true)}
       >
         <TrashIcon />
@@ -43,7 +40,7 @@ export default function RemoveQuestionModal({
           >
             <div className="flex items-center justify-between">
               <h2 className={`text-lg font-medium ${colors.text.primary}`}>
-                Remove question
+                Remove set
               </h2>
               <button
                 className={`${colors.text.muted} hover:${colors.text.primary}`}
@@ -54,7 +51,7 @@ export default function RemoveQuestionModal({
             </div>
             <div>
               <p className={`${colors.text.secondary}`}>
-                Are you sure you want to delete this question? This is a
+                Are you sure you want to delete this set? This is a
                 destructive action.
               </p>
             </div>

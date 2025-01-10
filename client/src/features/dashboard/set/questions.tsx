@@ -9,7 +9,7 @@ import { Question } from '@/shared/ts/types';
 import RemoveQuestionModal from './components/remove-question';
 
 export default function Questions() {
-  const { setId } = useParams();
+  const { setId } = useParams<{ setId: string }>();
   const {
     data: questions,
     isPending,
