@@ -111,6 +111,66 @@ question.post(
   }
 );
 
+question.patch(
+  '/:id/:questionId',
+  zValidator(
+    'json',
+    z.object({
+      question: z.string().max(90),
+      answers: z.string().max(60),
+      answer: z.string().max(60),
+    })
+  ),
+  async (c) => {
+    const userId = getUserIdFromCookie(c);
+    const setId = c.req.param('id');
+    const questionId = c.req.param('questionId');
+
+    const body = c.req.valid('json');
+    const { question, answers, answer } = body;
+
+    const user = await db
+      .select({ tokens: User.tokens })
+      .from(User)
+      .where(eq(User.id, userId))
+      .limit(1);
+
+    if (!user || user.length === 0) {
+      return c.json({ message: 'User not found' }, 404);
+    }
+
+    const set = await db
+      .select({
+        name: Set.name,
+      })
+      .from(Set)
+      .where(and(eq(Set.id, setId), eq(Set.userId, userId)))
+      .limit(1);
+
+    if (!set || set.length === 0) {
+      return c.json({ message: 'Unauthorized action' }, 403);
+    }
+
+    try {
+      await db
+        .update(Question)
+        .set({
+          question,
+          answers,
+          answer,
+        })
+        .where(
+          and(eq(Question.setId, setId), eq(Question.id, questionId))
+        );
+
+      return c.json({ message: `Question ${questionId} updated` }, 200);
+    } catch (error) {
+      console.log(error);
+      return c.json({ message: 'Could not update the question' }, 400);
+    }
+  }
+);
+
 question.delete('/:id/:questionId', async (c) => {
   const userId = getUserIdFromCookie(c);
   const setId = c.req.param('id');
