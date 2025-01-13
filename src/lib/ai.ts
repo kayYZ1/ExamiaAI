@@ -2,8 +2,7 @@ import OpenAI from 'openai';
 
 const openai = new OpenAI({
   baseURL: 'https://openrouter.ai/api/v1',
-  apiKey:
-    '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',
+  apiKey: process.env.OPEN_ROUTER_KEY as string,
 });
 
 const generateQuestions = async (
