@@ -3,12 +3,14 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 
 import App from './app.tsx';
+
 import './index.css';
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 120000,
+      gcTime: 5 * 60 * 1000,
+      staleTime: 10 * 1000,
       retry: false,
     },
   },

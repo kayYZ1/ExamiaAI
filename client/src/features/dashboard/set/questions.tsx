@@ -7,6 +7,7 @@ import { colors } from '@/styles/theme';
 import { Question } from '@/shared/ts/types';
 
 import RemoveQuestionModal from './components/remove-question';
+import EditQuestionModal from './components/edit-question';
 
 export default function Questions() {
   const { setId } = useParams<{ setId: string }>();
@@ -57,10 +58,18 @@ export default function Questions() {
                 >
                   {question.question}
                 </h2>
-                <RemoveQuestionModal
-                  setId={setId as string}
-                  questionId={question.id}
-                />
+                <div className="flex flex-row gap-2">
+                  <EditQuestionModal
+                    setId={setId as string}
+                    questionId={question.id}
+                    question={question}
+                  />
+
+                  <RemoveQuestionModal
+                    setId={setId as string}
+                    questionId={question.id}
+                  />
+                </div>
               </div>
               <p className={`mb-2 ${colors.text.secondary}`}>
                 {question.answer}
