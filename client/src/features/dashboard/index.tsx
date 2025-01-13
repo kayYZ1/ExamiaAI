@@ -4,6 +4,7 @@ import { Outlet, useNavigate } from 'react-router';
 import { colors } from '@/styles/theme';
 import StatCards from './components/stat-cards';
 import Breadcrumbs from './components/breadcrumbs';
+import Button from '@/shared/components/ui/button';
 
 export default function Index() {
   const navigate = useNavigate();
@@ -24,12 +25,9 @@ export default function Index() {
                 EXAMIA
               </span>
             </div>
-            <div
-              className={`inline-block ${colors.text.primary} hover:${colors.text.muted} cursor-pointer border-b-4 border-transparent hover:border-indigo-700`}
-              onClick={() => navigate('/dashboard/account')}
-            >
+            <Button onClick={() => navigate('/dashboard/account')}>
               Account
-            </div>
+            </Button>
           </div>
         </div>
       </nav>

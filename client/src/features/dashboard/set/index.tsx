@@ -9,6 +9,7 @@ import { colors } from '@/styles/theme';
 import Questions from './questions';
 import GenerateQuestions from './generate-questions';
 import RemoveSetModal from './components/remove-set';
+import EditSetModal from './components/edit-set';
 
 export default function Set() {
   const { setId } = useParams<{ setId: string }>();
@@ -60,7 +61,10 @@ export default function Set() {
           <p className={`${colors.text.muted} text-md`}>
             {set.createdAt.slice(0, 10)}
           </p>
-          <RemoveSetModal setId={setId} />
+          <div className="flex flex-row gap-4">
+            <EditSetModal set={set} />
+            <RemoveSetModal setId={setId} />
+          </div>
         </div>
       </div>
       <div className="space-y-4">
