@@ -14,23 +14,13 @@ import EditSetModal from './components/edit-set';
 export default function Set() {
   const { setId } = useParams<{ setId: string }>();
 
-  if (!setId) {
-    return (
-      <div className="flex h-96 items-center justify-center">
-        <p className={`${colors.text.muted} text-center`}>
-          Set ID could not be found
-        </p>
-      </div>
-    );
-  }
-
   const {
     data: set,
     isPending,
     error,
   } = useQuery<Set>({
     queryKey: ['sets', setId],
-    queryFn: () => getSet(setId),
+    queryFn: () => getSet(setId as string),
   });
 
   if (isPending) {
@@ -63,7 +53,7 @@ export default function Set() {
           </p>
           <div className="flex flex-row gap-4">
             <EditSetModal set={set} />
-            <RemoveSetModal setId={setId} />
+            <RemoveSetModal setId={setId as string} />
           </div>
         </div>
       </div>
