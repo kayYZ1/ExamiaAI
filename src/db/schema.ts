@@ -45,3 +45,20 @@ export const Question = sqliteTable('questions', {
     () => new Date()
   ),
 });
+
+export const Exam = sqliteTable('exams', {
+  id: text('id').primaryKey(),
+  setId: text('setId')
+    .notNull()
+    .references(() => Set.id),
+  title: text('title').notNull(),
+  participants: integer('participants').notNull(),
+  start: integer('start').notNull(),
+  duration: integer('duration').notNull(),
+  createdAt: text('createdAt')
+    .default(sql`(CURRENT_TIMESTAMP)`)
+    .notNull(),
+  updatedAt: integer('updatedAt', { mode: 'timestamp' }).$onUpdate(
+    () => new Date()
+  ),
+});

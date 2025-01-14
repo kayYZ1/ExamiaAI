@@ -5,6 +5,7 @@ import user from './routes/user';
 import auth from './routes/auth';
 import set from './routes/set';
 import question from './routes/question';
+import exam from './routes/exam';
 
 const app = new Hono();
 
@@ -28,6 +29,7 @@ app.route('/user', user);
 app.route('/auth', auth);
 app.route('/set', set);
 app.route('/question', question);
+app.route('/exam', exam);
 
 export default {
   port: 7676,
