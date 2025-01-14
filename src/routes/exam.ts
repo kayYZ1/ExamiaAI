@@ -7,7 +7,7 @@ import { db } from '../db/turso';
 import { eq, and } from 'drizzle-orm';
 import { randomUUID } from 'crypto';
 
-import { Exam, Question, Set, User } from '../db/schema';
+import { Exam, Set, User } from '../db/schema';
 import { getUserIdFromCookie } from '../shared/utils';
 
 const exam = new Hono<{ Variables: JwtVariables }>();
@@ -26,7 +26,7 @@ exam.get('/', async (c) => {
       id: Exam.id,
       title: Exam.title,
       participants: Exam.participants,
-      start: Exam.start,
+      status: Exam.status,
       duration: Exam.duration,
       setId: Exam.setId,
     })
@@ -46,7 +46,6 @@ exam.post(
     z.object({
       title: z.string().min(5).max(60),
       participants: z.number().min(1).max(20),
-      start: z.number(),
       duration: z.number(),
     })
   ),
@@ -55,10 +54,10 @@ exam.post(
     const setId = c.req.param('setId');
 
     const body = c.req.valid('json');
-    const { title, participants, start, duration } = body;
+    const { title, participants, duration } = body;
 
     const user = await db
-      .select({ tokens: User.tokens })
+      .select({ id: User.id })
       .from(User)
       .where(eq(User.id, userId))
       .limit(1);
@@ -80,14 +79,15 @@ exam.post(
     }
 
     try {
+      const examId = randomUUID();
       await db.insert(Exam).values({
-        id: randomUUID(),
+        id: examId,
         setId,
         title,
         participants,
-        start,
         duration,
       });
+
       return c.json({ message: 'Exam created successfully' }, 201);
     } catch (error) {
       console.error(error);
@@ -103,7 +103,7 @@ exam.patch(
     z.object({
       title: z.string().min(5).max(60).optional(),
       participants: z.number().min(1).max(20).optional(),
-      start: z.number().optional(),
+      status: z.string().optional(),
       duration: z.number().optional(),
     })
   ),
@@ -113,10 +113,10 @@ exam.patch(
     const examId = c.req.param('examId');
 
     const body = c.req.valid('json');
-    const { title, participants, start, duration } = body;
+    const { title, participants, duration, status } = body;
 
     const user = await db
-      .select({ tokens: User.tokens })
+      .select({ id: User.id })
       .from(User)
       .where(eq(User.id, userId))
       .limit(1);
@@ -143,7 +143,7 @@ exam.patch(
         .set({
           title,
           participants,
-          start,
+          status,
           duration,
         })
         .where(eq(Exam.id, examId));
@@ -161,7 +161,7 @@ exam.delete('/:examId/:setId', async (c) => {
   const examId = c.req.param('examId');
 
   const user = await db
-    .select({ tokens: User.tokens })
+    .select({ id: User.id })
     .from(User)
     .where(eq(User.id, userId))
     .limit(1);

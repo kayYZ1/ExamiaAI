@@ -6,6 +6,7 @@ import auth from './routes/auth';
 import set from './routes/set';
 import question from './routes/question';
 import exam from './routes/exam';
+import ws from './routes/ws';
 
 const app = new Hono();
 
@@ -30,9 +31,9 @@ app.route('/auth', auth);
 app.route('/set', set);
 app.route('/question', question);
 app.route('/exam', exam);
+app.route('/ws', ws);
 
 export default {
-  port: 7676,
   fetch: app.fetch,
-  idleTimeout: 15,
+  port: 7676,
 };

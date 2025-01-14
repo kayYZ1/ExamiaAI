@@ -52,8 +52,8 @@ export const Exam = sqliteTable('exams', {
     .notNull()
     .references(() => Set.id),
   title: text('title').notNull(),
+  status: text('status').notNull().default('created'),
   participants: integer('participants').notNull(),
-  start: integer('start').notNull(),
   duration: integer('duration').notNull(),
   createdAt: text('createdAt')
     .default(sql`(CURRENT_TIMESTAMP)`)
