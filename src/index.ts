@@ -1,5 +1,7 @@
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
+import { createBunWebSocket } from 'hono/bun';
+import type { ServerWebSocket } from 'bun';
 
 import user from './routes/user';
 import auth from './routes/auth';
@@ -9,6 +11,8 @@ import exam from './routes/exam';
 import ws from './routes/ws';
 
 const app = new Hono();
+
+const { websocket } = createBunWebSocket<ServerWebSocket>();
 
 app.use(
   '*',
@@ -36,4 +40,5 @@ app.route('/ws', ws);
 export default {
   fetch: app.fetch,
   port: 7676,
+  websocket,
 };
