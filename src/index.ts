@@ -17,8 +17,12 @@ const { websocket } = createBunWebSocket<ServerWebSocket>();
 app.use(
   '*',
   cors({
-    origin: 'http://localhost:5173/',
-    allowHeaders: ['X-Custom-Header', 'Upgrade-Insecure-Requests'],
+    origin: 'http://localhost:5173',
+    allowHeaders: [
+      'X-Custom-Header',
+      'Upgrade-Insecure-Requests',
+      'Content-Type',
+    ],
     allowMethods: ['POST', 'GET', 'OPTIONS', 'PATCH', 'DELETE'],
     exposeHeaders: ['Content-Length', 'X-Kuma-Revision'],
     maxAge: 600,

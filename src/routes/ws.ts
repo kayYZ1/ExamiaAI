@@ -1,8 +1,8 @@
 import { Hono } from 'hono';
 import { createBunWebSocket } from 'hono/bun';
+import type { WSContext } from 'hono/ws';
 import { eq, and } from 'drizzle-orm';
 import type { ServerWebSocket } from 'bun';
-import { WSEvents } from 'hono/ws';
 
 import { db } from '../db/turso';
 import { getUserIdFromCookie } from '../shared/utils';
@@ -12,22 +12,58 @@ const ws = new Hono();
 
 const { upgradeWebSocket } = createBunWebSocket<ServerWebSocket>();
 
-const activeSessions: Map<string, { examId: string; clients: Set<any> }> =
-  new Map();
+const activeSessions: Map<
+  string,
+  {
+    examId: string;
+    clients: Set<{
+      ws: WSContext<ServerWebSocket<undefined>>;
+      fullName: string;
+    }>;
+  }
+> = new Map();
 
 ws.get(
-  '/',
+  '/join/:code',
   upgradeWebSocket((c) => {
+    const connectionCode = c.req.param('code');
     return {
       onOpen() {
-        console.log('WebSocket connection opened');
+        if (!connectionCode || !activeSessions.has(connectionCode)) {
+          console.log('Wrong connection code');
+          return;
+        }
+
+        console.log('Person joined the room');
       },
       onMessage(event, ws) {
-        console.log(`Message received: ${event.data}`);
-        ws.send(`Server echo: ${event.data}`);
+        const fullName = event.data as string; // Student's full name
+
+        const session = activeSessions.get(connectionCode);
+        if (session) {
+          session.clients.add({ ws, fullName });
+
+          ws.send(
+            JSON.stringify({
+              message: `Welcome ${fullName}! You have joined the exam.`,
+            })
+          );
+
+          session.clients.forEach((client) => {
+            client.ws.send(
+              JSON.stringify({
+                message: `${fullName} has joined the exam.`,
+              })
+            );
+          });
+
+          if (session.clients.size == 2) {
+            startExamTimer(session);
+          }
+        }
       },
       onClose() {
-        console.log('WebSocket connection closed');
+        console.log('Closing connection');
       },
     };
   })
@@ -62,49 +98,53 @@ ws.post('/:examId/start', async (c) => {
   const connectionCode = Math.random()
     .toString(36)
     .substring(2, 8)
-    .toUpperCase();
+    .toUpperCase(); //4 letter string code
 
   activeSessions.set(connectionCode, { examId, clients: new Set() });
 
   return c.json({ success: true, examId, connectionCode });
 });
 
-ws.get(
-  '/session',
-  upgradeWebSocket((c) => {
-    const url = new URL(c.req.url);
-    const joinCode = url.searchParams.get('code');
+function startExamTimer(session: {
+  examId: string;
+  clients: Set<{
+    ws: WSContext<ServerWebSocket<undefined>>;
+    fullName: string;
+  }>;
+}) {
+  const timerDuration = 60; //One minute
+  let timeLeft = timerDuration;
 
-    if (!joinCode || !activeSessions.has(joinCode)) {
-      return {};
+  const timerInterval = setInterval(() => {
+    timeLeft -= 1;
+
+    session.clients.forEach((client) => {
+      client.ws.send(
+        JSON.stringify({
+          message: `Time left: ${timeLeft} seconds`,
+        })
+      );
+    });
+
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      session.clients.forEach((client) => {
+        client.ws.send(
+          JSON.stringify({
+            message: 'Time is up! The exam has ended.',
+          })
+        );
+      });
     }
+  }, 1000);
 
-    const session = activeSessions.get(joinCode)!;
-
-    return {
-      onOpen(ws: ServerWebSocket) {
-        console.log(`Participant joined session: ${joinCode}`);
-        session.clients.add(ws);
-      },
-      onMessage(event: MessageEvent, ws: ServerWebSocket) {
-        console.log(`Message from participant: ${event.data}`);
-        session.clients.forEach((client) => {
-          if (client !== ws) {
-            client.send(`Participant: ${event.data}`);
-          }
-        });
-      },
-      onClose(ws: ServerWebSocket) {
-        console.log(`Participant left session: ${joinCode}`);
-        session.clients.delete(ws);
-
-        if (session.clients.size === 0) {
-          console.log(`Closing session: ${joinCode}`);
-          activeSessions.delete(joinCode);
-        }
-      },
-    };
-  })
-);
+  session.clients.forEach((client) => {
+    client.ws.send(
+      JSON.stringify({
+        message: 'The exam has started!',
+      })
+    );
+  });
+}
 
 export default ws;
