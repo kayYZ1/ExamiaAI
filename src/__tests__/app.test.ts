@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'bun:test';
-import app from '../index';
+
+import { appInstance } from '..';
 
 const mockRequest = async (url: RequestInfo | URL, options = {}) => {
-  const response = await app.fetch(new Request(url, options));
+  const response = await appInstance.fetch(new Request(url, options));
   return response;
 };
 
