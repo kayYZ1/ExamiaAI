@@ -1,6 +1,7 @@
 import { Hono } from 'hono';
 import { createBunWebSocket } from 'hono/bun';
 import type { WSContext } from 'hono/ws';
+import { randomUUID } from 'crypto';
 import { eq, and } from 'drizzle-orm';
 import type { ServerWebSocket } from 'bun';
 
@@ -18,52 +19,75 @@ const activeSessions: Map<
     examId: string;
     clients: Set<{
       ws: WSContext<ServerWebSocket<undefined>>;
+      id: string;
       fullName: string;
     }>;
   }
 > = new Map();
 
 ws.get(
-  '/join/:code',
+  '/session/:code',
   upgradeWebSocket((c) => {
     const connectionCode = c.req.param('code');
+    const uid = randomUUID();
+
     return {
-      onOpen() {
+      onOpen(_, ws) {
         if (!connectionCode || !activeSessions.has(connectionCode)) {
-          console.log('Wrong connection code');
+          console.log(`Wrong connection code for ${uid}`);
+          ws.close();
           return;
         }
 
-        console.log('Person joined the room');
+        console.log(`${uid} joined the session`);
       },
       onMessage(event, ws) {
         const fullName = event.data as string; // Student's full name
 
         const session = activeSessions.get(connectionCode);
-        if (session) {
-          session.clients.add({ ws, fullName });
 
+        if (!session) {
           ws.send(
             JSON.stringify({
-              message: `Welcome ${fullName}! You have joined the exam.`,
+              message: `Exam session does not exist`,
             })
           );
+          ws.close();
+          return;
+        }
 
-          session.clients.forEach((client) => {
-            client.ws.send(
-              JSON.stringify({
-                message: `${fullName} has joined the exam.`,
-              })
-            );
-          });
+        if (
+          Array.from(session.clients).some((client) => client.id === uid)
+        ) {
+          ws.send(
+            JSON.stringify({
+              message: `Client already joined the session`,
+            })
+          );
+          return;
+        }
 
-          if (session.clients.size == 2) {
-            startExamTimer(session);
-          }
+        session.clients.add({ ws, id: uid, fullName });
+        ws.send(
+          JSON.stringify({
+            message: `Welcome ${fullName}! You have joined the exam.`,
+          })
+        );
+
+        session.clients.forEach((client) => {
+          client.ws.send(
+            JSON.stringify({
+              message: `${fullName} has joined the exam.`,
+            })
+          );
+        });
+
+        if (session.clients.size === 5) {
+          startExamTimer(session);
         }
       },
       onClose() {
-        console.log('Closing connection');
+        console.log(`${uid} has left the session`);
       },
     };
   })
