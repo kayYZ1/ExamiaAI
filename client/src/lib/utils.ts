@@ -10,6 +10,9 @@ export const convertDurationToReadable = (durationInMs: number) => {
   if (toHours >= 1) {
     const hours = Math.floor(toHours);
     const minutes = Math.floor(toMinutes % 60);
+    if (minutes === 0) {
+      return `${hours} hour${hours > 1 ? 's' : ''}`;
+    }
     return `${hours} hour${hours > 1 ? 's' : ''} ${minutes} minute${minutes > 1 ? 's' : ''}`;
   } else {
     return `${Math.floor(toMinutes)} minute${toMinutes > 1 ? 's' : ''}`;

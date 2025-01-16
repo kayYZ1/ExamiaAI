@@ -1,0 +1,56 @@
+name: CI_EXAMIA
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  server:
+    name: ci-server
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install Dependencies
+        run: bun install
+
+      - name: Run Prettier
+        run: bun prettier
+
+      - name: Run ESLint
+        run: bun lint
+
+      - name: Run tests
+        run: bun test
+
+  client:
+    name: ci-client
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Navigate to client
+        run: cd client
+
+      - name: Install Dependencies
+        run: bun install
+
+      - name: Run Prettier
+        run: bun prettier
+
+      - name: Run ESLint
+        run: bun lint
+
+      - name: Run tests
+        run: bun test
