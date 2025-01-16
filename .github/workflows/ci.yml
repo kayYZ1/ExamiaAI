@@ -20,11 +20,23 @@ jobs:
       - name: Install Dependencies
         run: bun install
 
+      - name: Export Environment Variables
+        env:
+          TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
+          TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          OPEN_ROUTER_KEY: ${{ secrets.OPEN_ROUTER_KEY }}
+        run: |
+          echo "TURSO_DATABASE_URL=${{ secrets.TURSO_DATABASE_URL }}" >> $GITHUB_ENV
+          echo "TURSO_AUTH_TOKEN=${{ secrets.TURSO_AUTH_TOKEN }}" >> $GITHUB_ENV
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> $GITHUB_ENV
+          echo "OPEN_ROUTER_KEY=${{ secrets.OPEN_ROUTER_KEY }}" >> $GITHUB_ENV
+
       - name: Run Prettier
         run: bun prettier
 
       - name: Run ESLint
         run: bun lint
 
-      - name: Run tests
+      - name: Run Tests
         run: bun test
