@@ -41,6 +41,8 @@ app.route('/question', question);
 app.route('/exam', exam);
 app.route('/ws', ws);
 
+export const appInstance = app;
+
 export default {
   fetch: app.fetch,
   port: 7676,
