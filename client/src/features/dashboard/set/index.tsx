@@ -8,6 +8,7 @@ import { colors } from '@/styles/theme';
 
 import Questions from './questions';
 import GenerateQuestions from './generate-questions';
+import Exams from './exams';
 import RemoveSetModal from './components/remove-set';
 import EditSetModal from './components/edit-set';
 
@@ -42,25 +43,28 @@ export default function Set() {
   }
 
   return (
-    <div
-      className={`rounded-lg ${colors.background.secondary} my-4 p-8 shadow-lg ${colors.text.primary}`}
-    >
-      <div className="flex justify-between">
-        <h1 className="mb-4 text-2xl font-bold">{set.name}</h1>
-        <div className="flex flex-row gap-4">
-          <p className={`${colors.text.muted} text-md`}>
-            {set.createdAt.slice(0, 10)}
-          </p>
+    <>
+      <div
+        className={`rounded-lg ${colors.background.secondary} my-4 p-8 shadow-lg ${colors.text.primary}`}
+      >
+        <div className="flex justify-between">
+          <h1 className="mb-4 text-2xl font-bold">{set.name}</h1>
           <div className="flex flex-row gap-4">
-            <EditSetModal set={set} />
-            <RemoveSetModal setId={setId as string} />
+            <p className={`${colors.text.muted} text-md`}>
+              {set.createdAt.slice(0, 10)}
+            </p>
+            <div className="flex flex-row gap-4">
+              <EditSetModal set={set} />
+              <RemoveSetModal setId={setId as string} />
+            </div>
           </div>
         </div>
+        <div className="space-y-4">
+          <Questions />
+          <GenerateQuestions />
+        </div>
       </div>
-      <div className="space-y-4">
-        <Questions />
-        <GenerateQuestions />
-      </div>
-    </div>
+      <Exams setId={setId as string} />
+    </>
   );
 }

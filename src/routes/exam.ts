@@ -20,7 +20,32 @@ exam.use('*', (c, next) => {
   return jwtMiddleware(c, next);
 });
 
-exam.get('/', async (c) => {
+exam.get('/:setId', async (c) => {
+  const userId = getUserIdFromCookie(c);
+  const setId = c.req.param('setId');
+
+  const user = await db
+    .select({ id: User.id })
+    .from(User)
+    .where(eq(User.id, userId))
+    .limit(1);
+
+  if (!user || user.length === 0) {
+    return c.json({ message: 'User not found' }, 404);
+  }
+
+  const set = await db
+    .select({
+      name: Set.name,
+    })
+    .from(Set)
+    .where(and(eq(Set.id, setId), eq(Set.userId, userId)))
+    .limit(1);
+
+  if (!set || set.length === 0) {
+    return c.json({ message: 'Unauthorized action' }, 403);
+  }
+
   const exams = await db
     .select({
       id: Exam.id,

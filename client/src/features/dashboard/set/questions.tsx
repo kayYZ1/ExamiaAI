@@ -41,7 +41,7 @@ export default function Questions() {
   }
 
   return (
-    <div className="scr h-96 overflow-y-auto pl-1 pr-4">
+    <div className="scr h-80 overflow-y-auto pl-1 pr-4">
       <h1 className={`text-xl font-bold ${colors.text.primary} mb-4`}>
         Questions
       </h1>
