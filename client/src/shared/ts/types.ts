@@ -22,3 +22,12 @@ export type Question = {
   answers: string;
   answer: string;
 };
+
+export type Exam = {
+  id: string;
+  title: string;
+  participants: number;
+  status: string;
+  duration: number;
+  setId: string;
+};
