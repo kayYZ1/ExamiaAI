@@ -83,7 +83,7 @@ exam.post(
     const { title, participants, duration } = body;
 
     const user = await db
-      .select({ id: User.id })
+      .select({ id: User.id, exams: User.exams })
       .from(User)
       .where(eq(User.id, userId))
       .limit(1);
@@ -104,6 +104,13 @@ exam.post(
       return c.json({ message: 'Unauthorized action' }, 403);
     }
 
+    if (user[0].exams >= 4) {
+      return c.json(
+        { message: "You've reached maximum limit of exams" },
+        400
+      );
+    }
+
     try {
       const examId = randomUUID();
       await db.insert(Exam).values({
@@ -113,6 +120,11 @@ exam.post(
         participants,
         duration,
       });
+
+      await db
+        .update(User)
+        .set({ exams: user[0].exams + 1 })
+        .where(eq(User.id, userId));
 
       return c.json({ message: 'Exam created successfully' }, 201);
     } catch (error) {
@@ -187,7 +199,7 @@ exam.delete('/:examId/:setId', async (c) => {
   const examId = c.req.param('examId');
 
   const user = await db
-    .select({ id: User.id })
+    .select({ id: User.id, exams: User.exams })
     .from(User)
     .where(eq(User.id, userId))
     .limit(1);
@@ -210,6 +222,12 @@ exam.delete('/:examId/:setId', async (c) => {
 
   try {
     await db.delete(Exam).where(eq(Exam.id, examId));
+
+    await db
+      .update(User)
+      .set({ exams: user[0].exams - 1 })
+      .where(eq(User.id, userId));
+
     return c.json({ message: 'Exam deleted successfully' }, 200);
   } catch (error) {
     console.error(error);

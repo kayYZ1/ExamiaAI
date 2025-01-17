@@ -5,6 +5,7 @@ export type User = {
   email: string;
   sets: string;
   alias?: string;
+  exams: number;
   tokens: number;
   plan: Plan;
 };

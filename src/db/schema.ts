@@ -7,6 +7,7 @@ export const User = sqliteTable('users', {
   alias: text('alias'),
   sets: integer('sets').notNull().default(0),
   tokens: integer('tokens').notNull().default(15),
+  exams: integer('exams').notNull().default(0),
   plan: text('plan').notNull().default('Basic'),
   createdAt: text('createdAt')
     .default(sql`(CURRENT_TIMESTAMP)`)

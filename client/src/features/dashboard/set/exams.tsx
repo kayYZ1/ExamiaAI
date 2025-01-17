@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { getExams } from '@/lib/queries';
-import { Exam } from '@/shared/ts/types';
+import { getExams, getUser } from '@/lib/queries';
+import { Exam, User } from '@/shared/ts/types';
 import { colors } from '@/styles/theme';
-
 import Spinner from '@/shared/components/ui/spinner';
+
 import ShowExam from './components/show-exam';
 import CreateExam from './components/create-exam';
 
@@ -16,6 +16,11 @@ export default function Exams({ setId }: { setId: string }) {
   } = useQuery<Exam[]>({
     queryKey: ['exams', setId],
     queryFn: () => getExams(setId),
+  });
+
+  const { data: user } = useQuery<User>({
+    queryKey: ['user'],
+    queryFn: getUser,
   });
 
   if (isPending) {
@@ -43,7 +48,7 @@ export default function Exams({ setId }: { setId: string }) {
       {exams.map((exam) => (
         <ShowExam exam={exam} key={exam.id} />
       ))}
-      <CreateExam setId={setId} />
+      {user && user.exams < 4 && <CreateExam setId={setId} />}
     </div>
   );
 }

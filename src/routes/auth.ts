@@ -135,6 +135,7 @@ auth.get('/profile', async (c) => {
       email: User.email,
       sets: User.sets,
       tokens: User.tokens,
+      exams: User.exams,
       plan: User.plan,
       alias: User.alias,
     })
