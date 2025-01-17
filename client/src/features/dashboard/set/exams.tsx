@@ -6,6 +6,7 @@ import { colors } from '@/styles/theme';
 
 import Spinner from '@/shared/components/ui/spinner';
 import ShowExam from './components/show-exam';
+import CreateExam from './components/create-exam';
 
 export default function Exams({ setId }: { setId: string }) {
   const {
@@ -19,7 +20,7 @@ export default function Exams({ setId }: { setId: string }) {
 
   if (isPending) {
     return (
-      <div className="flex h-96 items-center justify-center">
+      <div className="flex items-center justify-center">
         <Spinner />
       </div>
     );
@@ -27,7 +28,7 @@ export default function Exams({ setId }: { setId: string }) {
 
   if (error) {
     return (
-      <div className="flex h-96 items-center justify-center">
+      <div className="flex items-center justify-center">
         <p className={`${colors.text.danger} text-center`}>
           Something went wrong, please try again
         </p>
@@ -42,6 +43,7 @@ export default function Exams({ setId }: { setId: string }) {
       {exams.map((exam) => (
         <ShowExam exam={exam} key={exam.id} />
       ))}
+      <CreateExam setId={setId} />
     </div>
   );
 }

@@ -55,7 +55,8 @@ exam.get('/:setId', async (c) => {
       duration: Exam.duration,
       setId: Exam.setId,
     })
-    .from(Exam);
+    .from(Exam)
+    .where(eq(Exam.setId, setId));
 
   if (!exams) {
     return c.json({ message: 'No questions found' }, 404);
