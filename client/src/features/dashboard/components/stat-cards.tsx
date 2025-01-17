@@ -17,7 +17,7 @@ export default function StatCards() {
   });
 
   return (
-    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
       <div className={`rounded-md ${colors.background.secondary} p-6`}>
         <div className="flex items-center gap-4">
           <div className={`rounded-lg ${colors.background.tertiary} p-3`}>
@@ -46,6 +46,21 @@ export default function StatCards() {
               className={`text-2xl font-semibold ${colors.text.primary}`}
             >
               {isPending ? <Spinner /> : user?.tokens + '/15'}
+            </span>
+          </div>
+        </div>
+      </div>
+      <div className={`rounded-md ${colors.background.secondary} p-6`}>
+        <div className="flex items-center gap-4">
+          <div className={`rounded-lg ${colors.background.tertiary} p-3`}>
+            <BookOpen className={`h-6 w-6 ${colors.primary.text}`} />
+          </div>
+          <div>
+            <p className={`text-sm ${colors.text.muted}`}>Exams created</p>
+            <span
+              className={`text-2xl font-semibold ${colors.text.primary}`}
+            >
+              {isPending ? <Spinner /> : user?.exams + '/4'}
             </span>
           </div>
         </div>
