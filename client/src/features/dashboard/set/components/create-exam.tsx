@@ -36,7 +36,7 @@ export default function CreateExam({ setId }: { setId: string }) {
   });
 
   if (isSuccess) {
-    queryClient.invalidateQueries({ queryKey: ['exams'] });
+    queryClient.invalidateQueries({ queryKey: ['exams', setId] });
   }
 
   const {
