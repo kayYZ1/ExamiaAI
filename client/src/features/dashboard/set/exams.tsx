@@ -46,7 +46,7 @@ export default function Exams({ setId }: { setId: string }) {
       className={`grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4 ${colors.background.main}`}
     >
       {exams.map((exam) => (
-        <ShowExam exam={exam} key={exam.id} />
+        <ShowExam exam={exam} key={exam.id} setId={setId} />
       ))}
       {user && user.exams < 4 && <CreateExam setId={setId} />}
     </div>

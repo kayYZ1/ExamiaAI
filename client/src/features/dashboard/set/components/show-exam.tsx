@@ -1,13 +1,50 @@
 import { useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { XIcon } from 'lucide-react';
 
 import { colors } from '@/styles/theme';
 import { Exam } from '@/shared/ts/types';
 import Button from '@/shared/components/ui/button';
 import { convertDurationToReadable } from '@/lib/utils';
+import api from '@/lib/api';
+import Spinner from '@/shared/components/ui/spinner';
 
-export default function ShowExam({ exam }: { exam: Exam }) {
+export default function ShowExam({
+  exam,
+  setId,
+}: {
+  exam: Exam;
+  setId: string;
+}) {
   const [isOpen, setIsOpen] = useState(false);
+
+  const queryClient = useQueryClient();
+  const { mutate, isPending, isSuccess, error } = useMutation({
+    mutationKey: ['exams', exam.id],
+    mutationFn: async () => {
+      await api.delete(`/exam/${exam.id}/${setId}`);
+    },
+  });
+
+  const {
+    data,
+    mutate: startExam,
+    isPending: isStarting,
+    error: examStartErr,
+  } = useMutation({
+    mutationKey: ['exam'],
+    mutationFn: async () => {
+      const response = await api.post(`/ws/${exam.id}/start`);
+      return response.data;
+    },
+  });
+
+  if (isSuccess) {
+    queryClient.invalidateQueries({
+      queryKey: ['exams', setId],
+      exact: true,
+    });
+  }
 
   return (
     <>
@@ -58,12 +95,33 @@ export default function ShowExam({ exam }: { exam: Exam }) {
                 <strong>Status:</strong> {exam.status}
               </p>
             </div>
-            <Button
-              className="float-right"
-              onClick={() => console.log('Starting an exam..')}
-            >
-              Start
-            </Button>
+            <div className="flex justify-end space-x-4">
+              <Button onClick={() => startExam()} disabled={isStarting}>
+                {isStarting ? <Spinner /> : 'Start'}
+              </Button>
+              <Button
+                className={`${colors.background.secondary}`}
+                onClick={() => mutate()}
+                disabled={isPending}
+              >
+                {isPending ? <Spinner /> : 'Delete'}
+              </Button>
+            </div>
+            {data && (
+              <p className={`${colors.text.muted}`}>
+                http://localhost:5173/exam/${data.connectionCode}
+              </p>
+            )}
+            {error && (
+              <p className={`${colors.text.danger}`}>
+                Could not delete exam, please try again
+              </p>
+            )}
+            {examStartErr && (
+              <p className={`${colors.text.danger}`}>
+                Could not start an exam, please try again
+              </p>
+            )}
           </div>
         </div>
       )}

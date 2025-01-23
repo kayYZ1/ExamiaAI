@@ -17,6 +17,7 @@ const activeSessions: Map<
   string,
   {
     examId: string;
+    numOfParticipants: number;
     clients: Set<{
       ws: WSContext<ServerWebSocket<undefined>>;
       id: string;
@@ -82,7 +83,7 @@ ws.get(
           );
         });
 
-        if (session.clients.size === 5) {
+        if (session.clients.size === session.numOfParticipants) {
           startExamTimer(session);
         }
       },
@@ -110,6 +111,7 @@ ws.post('/:examId/start', async (c) => {
   const exam = await db
     .select({
       setId: Exam.setId,
+      participants: Exam.participants,
     })
     .from(Exam)
     .where(and(eq(Exam.id, examId)))
@@ -119,12 +121,18 @@ ws.post('/:examId/start', async (c) => {
     return c.json({ message: 'Unauthorized action' }, 403);
   }
 
+  const numOfParticipants = exam[0].participants;
+
   const connectionCode = Math.random()
     .toString(36)
     .substring(2, 8)
     .toUpperCase(); //4 letter string code
 
-  activeSessions.set(connectionCode, { examId, clients: new Set() });
+  activeSessions.set(connectionCode, {
+    examId,
+    numOfParticipants,
+    clients: new Set(),
+  });
 
   return c.json({ success: true, examId, connectionCode });
 });
