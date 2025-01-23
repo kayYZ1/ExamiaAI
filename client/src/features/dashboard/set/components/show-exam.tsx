@@ -97,19 +97,16 @@ export default function ShowExam({
             </div>
             <div className="flex justify-end space-x-4">
               <Button onClick={() => startExam()} disabled={isStarting}>
-                {isStarting ? <Spinner /> : 'Start'}
+                {isStarting ? <Spinner /> : 'Start exam'}
               </Button>
-              <Button
-                className={`${colors.background.secondary}`}
-                onClick={() => mutate()}
-                disabled={isPending}
-              >
+              <Button onClick={() => mutate()} disabled={isPending}>
                 {isPending ? <Spinner /> : 'Delete'}
               </Button>
             </div>
             {data && (
               <p className={`${colors.text.muted}`}>
-                http://localhost:5173/exam/${data.connectionCode}
+                http://localhost:5173/exam/
+                {data.connectionCode}
               </p>
             )}
             {error && (
