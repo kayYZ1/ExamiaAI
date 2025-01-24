@@ -104,7 +104,7 @@ export default function ShowExam({
               </Button>
             </div>
             {data && (
-              <p className={`${colors.text.muted}`}>
+              <p className={`${colors.text.muted} text-wrap`}>
                 http://localhost:5173/exam/
                 {data.connectionCode}
               </p>

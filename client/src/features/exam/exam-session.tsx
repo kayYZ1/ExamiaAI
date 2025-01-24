@@ -3,15 +3,22 @@ import { useParams } from 'react-router';
 
 import Button from '@/shared/components/ui/button';
 import { colors } from '@/styles/theme';
+import { Question } from '@/shared/ts/types';
+
+import ExamQuestions from './exam-questions';
 
 export default function ExamSession() {
-  const { connectionCode } = useParams<{ connectionCode: string }>();
+  const { connectionCode } = useParams<{
+    connectionCode: string;
+  }>();
 
   const [status, setStatus] = useState<string>('Connecting...');
-  const [messages, setMessages] = useState<string[]>([]);
+  const [logs, setLogs] = useState<string[]>([]);
   const [ws, setWs] = useState<WebSocket | null>(null);
   const [joined, setJoined] = useState(false);
+  const [questions, setQuestions] = useState<Question[]>([]);
   const [participants, setParticipants] = useState<number>(0);
+  const [duration, setDuration] = useState(0);
 
   const fullNameRef = useRef<HTMLInputElement>(null);
 
@@ -26,14 +33,25 @@ export default function ExamSession() {
     };
 
     socket.onmessage = (event) => {
-      const message = JSON.parse(event.data);
+      const log = JSON.parse(event.data);
 
-      if (message.message) {
-        setMessages((prev) => [...prev, message.message]);
+      if (log.message) {
+        setLogs((prev) => [...prev, log.message]);
       }
 
-      if (message.participants) {
-        setParticipants(message.participants);
+      if (log.participants) {
+        setParticipants((prev) => {
+          if (prev === log.participants) return prev;
+          return log.participants;
+        });
+      }
+
+      if (log.questions) {
+        setQuestions(log.questions);
+      }
+
+      if (log.duration) {
+        setDuration(log.duration);
       }
     };
 
@@ -54,7 +72,12 @@ export default function ExamSession() {
   const joinSession = () => {
     const fullName = fullNameRef.current?.value?.trim()!;
     if (ws && fullName.trim()) {
-      ws.send(fullName); // Send full name to the server
+      ws.send(
+        JSON.stringify({
+          type: 'join',
+          fullName,
+        })
+      );
       setJoined(true);
     }
   };
@@ -69,7 +92,7 @@ export default function ExamSession() {
       {status === 'Connected' &&
         (joined ? (
           participants === 2 ? (
-            <p>Exam has started</p>
+            <ExamQuestions questions={questions} duration={duration} />
           ) : (
             <p>Waiting for other participants to join</p>
           )
@@ -82,13 +105,16 @@ export default function ExamSession() {
               ref={fullNameRef}
               className={`w-full rounded-lg border p-4 ${colors.background.main} ${colors.text.muted} ${colors.border} focus:outline-none focus:ring-2 focus:ring-indigo-900`}
             />
-            <Button onClick={joinSession}>Join Session</Button>
+            <Button onClick={joinSession}>Join exam session</Button>
           </div>
         ))}
-
-      <p className={`${colors.text.muted}`}>
-        {messages[messages.length - 1]}
-      </p>
+      <div className="text-center">
+        {logs.slice(-3).map((log, index) => (
+          <p key={index} className={`${colors.text.muted}`}>
+            {log}
+          </p>
+        ))}
+      </div>
     </div>
   );
 }

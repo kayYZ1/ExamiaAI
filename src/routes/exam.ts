@@ -7,10 +7,39 @@ import { db } from '../db/turso';
 import { eq, and } from 'drizzle-orm';
 import { randomUUID } from 'crypto';
 
-import { Exam, Set, User } from '../db/schema';
+import { Exam, Set, User, Question } from '../db/schema';
 import { getUserIdFromCookie } from '../shared/utils';
 
 const exam = new Hono<{ Variables: JwtVariables }>();
+
+exam.get('/questions/:examId', async (c) => {
+  const examId = c.req.param('examId');
+
+  const exam = await db
+    .select({ setId: Exam.setId })
+    .from(Exam)
+    .where(eq(Exam.id, examId))
+    .limit(1);
+
+  if (!exam || exam.length === 0) {
+    return c.json({ message: 'Exam not found' }, 404);
+  }
+
+  const questions = await db
+    .select({
+      id: Question.id,
+      question: Question.question,
+      answers: Question.answers,
+    })
+    .from(Question)
+    .where(eq(Question.setId, exam[0].setId));
+
+  if (!questions || questions.length === 0) {
+    return c.json({ message: 'No questions found' }, 404);
+  }
+
+  return c.json(questions, 200);
+});
 
 exam.use('*', (c, next) => {
   const jwtMiddleware = jwt({
