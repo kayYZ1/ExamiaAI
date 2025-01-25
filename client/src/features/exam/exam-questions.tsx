@@ -2,6 +2,13 @@ import { useEffect, useState } from 'react';
 
 import { colors } from '@/styles/theme';
 import { Question } from '@/shared/ts/types';
+import Button from '@/shared/components/ui/button';
+
+type Answers = {
+  question: string;
+  answer: string;
+  correct: boolean;
+};
 
 export default function ExamQuestions({
   questions,
@@ -11,37 +18,51 @@ export default function ExamQuestions({
   duration: number;
 }) {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [answers, setAnswers] = useState({});
+  const [answers, setAnswers] = useState<Answers[]>([]);
   const [score, setScore] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(duration);
+  const [timeLeft, setTimeLeft] = useState(duration / 1000);
 
   const currentQuestion = questions[currentQuestionIndex] as Question;
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setTimeLeft((prevTime) =>
-        prevTime < 0 ? duration : prevTime - 1000
-      );
+      setTimeLeft((prevTime) => {
+        if (prevTime <= 0) {
+          clearInterval(timer);
+          console.log('Time is up! Submitting answers...');
+          handleSubmit();
+          return 0;
+        }
+        return prevTime - 1;
+      });
     }, 1000);
-
-    if (timeLeft === 0) {
-      console.log('Time is up! Submitting answers...');
-      clearInterval(timer);
-    }
 
     return () => clearInterval(timer);
   }, [duration]);
 
   const handleAnswerSubmit = (selectedAnswer: string) => {
     const trimAnswer = selectedAnswer.trim();
-    setAnswers({
-      ...answers,
-      [currentQuestion.question]: trimAnswer,
-    });
-    if (trimAnswer === currentQuestion.answer.trim()) {
-      setScore(score + 1);
-    }
+    const isAnswerCorrect = trimAnswer === currentQuestion.answer.trim();
+
+    setAnswers((prevAnswers) => [
+      ...prevAnswers,
+      {
+        question: currentQuestion.question,
+        answer: trimAnswer,
+        correct: isAnswerCorrect,
+      },
+    ]);
+
+    if (isAnswerCorrect) setScore(score + 1);
+
     setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
+  };
+
+  const handleSubmit = () => {
+    console.log('Submitted Answers:', answers, 'Score:', score);
+    if (timeLeft > 0) {
+      setTimeLeft(0);
+    }
   };
 
   return (
@@ -49,16 +70,25 @@ export default function ExamQuestions({
       className={`rounded-lg ${colors.background.main} ${colors.text.primary}`}
     >
       <header className={`mb-4 border-b pb-2 ${colors.border}`}>
-        <p className={`${colors.text.secondary} text-center`}>
-          Answer the questions below carefully.
-        </p>
-        <p className={`${colors.text.secondary} text-center`}>
-          Time left: {timeLeft} seconds
-        </p>
+        {timeLeft <= 0 ? (
+          <p className={`${colors.text.secondary} text-center`}>
+            Congratulations(?) your score is {score} out of{' '}
+            {questions.length}
+          </p>
+        ) : (
+          <>
+            <p className={`${colors.text.secondary} text-center`}>
+              Answer the questions below carefully.
+            </p>
+            <p className={`${colors.text.secondary} text-center`}>
+              Time left: {timeLeft} seconds
+            </p>
+          </>
+        )}
       </header>
 
       <section>
-        {currentQuestion ? (
+        {timeLeft > 0 && currentQuestion ? (
           <div
             className={`mb-4 rounded-lg p-4 ${colors.background.secondary}`}
           >
@@ -88,18 +118,43 @@ export default function ExamQuestions({
             No more questions available.
           </p>
         )}
+        {timeLeft <= 0 && (
+          <>
+            <p className={`${colors.text.secondary} text-center`}>
+              The quiz has ended
+            </p>
+            <div className="space-y-4 py-4">
+              {answers.map((a, index) => (
+                <div
+                  key={index}
+                  className={`rounded-lg ${colors.background.secondary} p-4 shadow-md`}
+                >
+                  <h3
+                    className={`text-md mb-2 font-semibold ${colors.text.primary}`}
+                  >
+                    {a.question}
+                  </h3>
+                  <p
+                    className={`${a.correct ? colors.text.success : colors.text.danger} text-sm`}
+                  >
+                    Answer: {a.answer}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
       </section>
 
       <footer className={`mt-4 border-t pt-4 ${colors.border}`}>
         {!currentQuestion && (
-          <button
-            onClick={() =>
-              console.log('Submitted Answers:', answers, 'Score:', score)
-            }
+          <Button
+            onClick={() => handleSubmit()}
             className={`rounded-md px-4 py-2 font-medium ${colors.primary.main} ${colors.text.primary} float-right`}
+            disabled={timeLeft <= 0}
           >
             Submit Answers
-          </button>
+          </Button>
         )}
       </footer>
     </div>

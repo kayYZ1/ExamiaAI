@@ -108,7 +108,6 @@ ws.get(
               client.ws.send(
                 JSON.stringify({
                   message: `${fullName} has joined the exam.`,
-                  participants: session.clients.size,
                 })
               );
             }
