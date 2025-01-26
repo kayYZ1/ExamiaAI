@@ -63,3 +63,19 @@ export const Exam = sqliteTable('exams', {
     () => new Date()
   ),
 });
+
+export const Score = sqliteTable('scores', {
+  id: text('id').primaryKey(),
+  examId: text('examId')
+    .notNull()
+    .references(() => Exam.id),
+  fullName: text('fullName').notNull(),
+  score: integer('score').notNull(),
+  sessionCode: text('sessionCode').notNull(),
+  createdAt: text('createdAt')
+    .default(sql`(CURRENT_TIMESTAMP)`)
+    .notNull(),
+  updatedAt: integer('updatedAt', { mode: 'timestamp' }).$onUpdate(
+    () => new Date()
+  ),
+});

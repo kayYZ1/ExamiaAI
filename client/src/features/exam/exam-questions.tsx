@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 import { colors } from '@/styles/theme';
 import { Question } from '@/shared/ts/types';
@@ -13,14 +13,18 @@ type Answers = {
 export default function ExamQuestions({
   questions,
   duration,
+  ws,
 }: {
   questions: Question[];
   duration: number;
+  ws: WebSocket;
 }) {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<Answers[]>([]);
   const [score, setScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(duration / 1000);
+
+  const isSubmitted = useRef(false); //Use as a flag to handle submits
 
   const currentQuestion = questions[currentQuestionIndex] as Question;
 
@@ -59,10 +63,20 @@ export default function ExamQuestions({
   };
 
   const handleSubmit = () => {
+    if (isSubmitted.current) return;
+    isSubmitted.current = true;
+
     console.log('Submitted Answers:', answers, 'Score:', score);
     if (timeLeft > 0) {
       setTimeLeft(0);
     }
+
+    ws.send(
+      JSON.stringify({
+        type: 'submit',
+        score,
+      })
+    );
   };
 
   return (
@@ -149,7 +163,7 @@ export default function ExamQuestions({
       <footer className={`mt-4 border-t pt-4 ${colors.border}`}>
         {!currentQuestion && (
           <Button
-            onClick={() => handleSubmit()}
+            onClick={handleSubmit}
             className={`rounded-md px-4 py-2 font-medium ${colors.primary.main} ${colors.text.primary} float-right`}
             disabled={timeLeft <= 0}
           >

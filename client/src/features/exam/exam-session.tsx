@@ -85,7 +85,11 @@ export default function ExamSession() {
         (joined ? (
           logs.some((arr) => arr.includes('The exam has started!')) &&
           duration !== 0 ? (
-            <ExamQuestions questions={questions} duration={duration} />
+            <ExamQuestions
+              questions={questions}
+              duration={duration}
+              ws={ws as WebSocket}
+            />
           ) : (
             <p>Waiting for other participants to join</p>
           )
