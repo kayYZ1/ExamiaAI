@@ -2,6 +2,7 @@ import { lazy } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router';
 
 import AuthGuard from './guards/auth';
+import ExamHistory from './features/exam/exam-history';
 
 const Home = lazy(() => import('./features/home'));
 const NotFound = lazy(() => import('./features/not-found'));
@@ -46,6 +47,7 @@ export default function App() {
         </Route>
         <Route path="exam" element={<Exam />}>
           <Route path=":connectionCode" element={<ExamSession />} />
+          <Route path="history/:examId" element={<ExamHistory />} />
         </Route>
       </Routes>
     </BrowserRouter>

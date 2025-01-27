@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { XIcon } from 'lucide-react';
 
@@ -17,6 +18,7 @@ export default function ShowExam({
   setId: string;
 }) {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
 
   const queryClient = useQueryClient();
   const { mutate, isPending, isSuccess, error } = useMutation({
@@ -93,6 +95,12 @@ export default function ShowExam({
               </p>
               <p className={`${colors.text.secondary}`}>
                 <strong>Status:</strong> {exam.status}
+              </p>
+              <p
+                className={`${colors.text.muted} cursor-pointer underline`}
+                onClick={() => navigate(`/exam/history/${exam.id}`)}
+              >
+                Show history
               </p>
             </div>
             <div className="flex justify-end space-x-4">
