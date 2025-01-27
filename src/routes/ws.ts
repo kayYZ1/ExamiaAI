@@ -7,7 +7,7 @@ import type { ServerWebSocket } from 'bun';
 
 import { db } from '../db/turso';
 import { getUserIdFromCookie } from '../shared/utils';
-import { User, Exam, Question } from '../db/schema';
+import { User, Exam, Question, Score } from '../db/schema';
 import type { ExamQuestions } from '../shared/types';
 
 const ws = new Hono();
@@ -108,7 +108,6 @@ ws.get(
               client.ws.send(
                 JSON.stringify({
                   message: `${fullName} has joined the exam.`,
-                  participants: session.clients.size,
                 })
               );
             }
@@ -132,17 +131,32 @@ ws.get(
         }
 
         if (message.type === 'submit') {
-          const { questionId, answer } = message;
+          const { score } = message;
+          const { examId } = session;
 
-          console.log(
-            `Client ${uid} answered question ${questionId}: ${answer}`
-          );
+          let fullName: string;
+          session.clients.forEach(async (client) => {
+            if (client.id === uid) {
+              fullName = client.fullName; // Use this outside of this scope for ws
+              await db.insert(Score).values({
+                id: randomUUID(),
+                examId,
+                fullName,
+                score,
+                sessionCode: connectionCode,
+              });
+            }
+          });
 
-          ws.send(
-            JSON.stringify({
-              message: `Your answer to question ${questionId} has been received.`,
-            })
-          );
+          session.clients.forEach((client) => {
+            if (client.id !== uid) {
+              client.ws.send(
+                JSON.stringify({
+                  message: `Participant ${fullName} has finished the exam with the score of ${score}.`,
+                })
+              );
+            }
+          });
         }
       },
       onClose(_, ws) {

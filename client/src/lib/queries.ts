@@ -24,3 +24,8 @@ export const getExams = async (setId: string) => {
   const response = await api.get(`/exam/${setId}`);
   return response.data;
 };
+
+export const getExamsHistory = async (examId: string) => {
+  const response = await api.get(`/exam/history/${examId}`);
+  return response.data;
+};

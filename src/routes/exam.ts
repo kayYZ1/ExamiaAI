@@ -7,7 +7,7 @@ import { db } from '../db/turso';
 import { eq, and } from 'drizzle-orm';
 import { randomUUID } from 'crypto';
 
-import { Exam, Set, User, Question } from '../db/schema';
+import { Exam, Set, User, Question, Score } from '../db/schema';
 import { getUserIdFromCookie } from '../shared/utils';
 
 const exam = new Hono<{ Variables: JwtVariables }>();
@@ -262,6 +262,51 @@ exam.delete('/:examId/:setId', async (c) => {
     console.error(error);
     return c.json({ message: 'Failed to delete exam' }, 500);
   }
+});
+
+exam.get('/history/:examId', async (c) => {
+  const userId = getUserIdFromCookie(c);
+  const examId = c.req.param('examId');
+
+  const user = await db
+    .select({ id: User.id })
+    .from(User)
+    .where(eq(User.id, userId))
+    .limit(1);
+
+  if (!user || user.length === 0) {
+    return c.json({ message: 'User not found' }, 404);
+  }
+
+  const exam = await db
+    .select({
+      title: Exam.title,
+      id: Exam.id,
+    })
+    .from(Exam)
+    .where(eq(Exam.id, examId))
+    .limit(1);
+
+  if (!exam) {
+    return c.json({ message: 'No exam found' }, 403);
+  }
+
+  const examScores = await db
+    .select({
+      id: Score.id,
+      examId: Score.examId,
+      fullName: Score.fullName,
+      score: Score.score,
+      sessionCode: Score.sessionCode,
+    })
+    .from(Score)
+    .where(eq(Score.examId, exam[0].id));
+
+  if (!examScores) {
+    return c.json({ message: 'No previous exam results' }, 400);
+  }
+
+  return c.json(examScores, 200);
 });
 
 export default exam;

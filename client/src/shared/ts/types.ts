@@ -32,3 +32,11 @@ export type Exam = {
   duration: number;
   setId: string;
 };
+
+export type ExamResult = {
+  id: string;
+  examId: string;
+  fullName: string;
+  score: number;
+  sessionCode: string;
+};

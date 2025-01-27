@@ -78,6 +78,13 @@
       "when": 1737106063279,
       "tag": "0010_dry_kid_colt",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "6",
+      "when": 1737892454501,
+      "tag": "0011_tearful_rockslide",
+      "breakpoints": true
     }
   ]
 }

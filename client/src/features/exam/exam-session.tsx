@@ -17,7 +17,6 @@ export default function ExamSession() {
   const [ws, setWs] = useState<WebSocket | null>(null);
   const [joined, setJoined] = useState(false);
   const [questions, setQuestions] = useState<Question[]>([]);
-  const [participants, setParticipants] = useState<number>(0);
   const [duration, setDuration] = useState(0);
 
   const fullNameRef = useRef<HTMLInputElement>(null);
@@ -37,13 +36,6 @@ export default function ExamSession() {
 
       if (log.message) {
         setLogs((prev) => [...prev, log.message]);
-      }
-
-      if (log.participants) {
-        setParticipants((prev) => {
-          if (prev === log.participants) return prev;
-          return log.participants;
-        });
       }
 
       if (log.questions) {
@@ -91,8 +83,13 @@ export default function ExamSession() {
 
       {status === 'Connected' &&
         (joined ? (
-          participants === 2 ? (
-            <ExamQuestions questions={questions} duration={duration} />
+          logs.some((arr) => arr.includes('The exam has started!')) &&
+          duration !== 0 ? (
+            <ExamQuestions
+              questions={questions}
+              duration={duration}
+              ws={ws as WebSocket}
+            />
           ) : (
             <p>Waiting for other participants to join</p>
           )
