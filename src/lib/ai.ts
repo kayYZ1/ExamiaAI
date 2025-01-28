@@ -12,7 +12,7 @@ const generateQuestions = async (
   topic: string
 ) => {
   const completion = await openai.chat.completions.create({
-    model: 'meta-llama/llama-3.1-405b-instruct:free',
+    model: 'deepseek/deepseek-chat',
     messages: [
       {
         role: 'user',
