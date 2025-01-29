@@ -12,18 +12,16 @@ const generateQuestions = async (
   topic: string
 ) => {
   const completion = await openai.chat.completions.create({
-    model: 'meta-llama/llama-3.1-405b-instruct:free',
+    model: 'mistralai/mistral-7b-instruct:free',
     messages: [
       {
         role: 'user',
         content: `
-          Imagine you are an ${setName} teacher and you want to create a test for your students. 
-          Create ${numOfQuestions} question(s) about ${topic} on ${level} academic level. 
-          FORMAT HAS TO BE LIKE THIS:
-          Question:[question]
-          Answers:[answers separated by comma all in one line can be true/false or multiple choice (max 4)]
-          Answer:[answer correct answer]
-          ALWAYS !!! RETURN THE DATA IN THIS FORMAT NO ADDITIONAL STUFF JUST THAT.
+          Context: ${setName}.
+          Generate ${numOfQuestions} test questions on ${topic} for ${level} level students. 
+          Respond in JSON format and return only this:
+          [{"question": "..", "answers": ".., .., .., ..", "answer": ".."}]
+          Maximum 4 answers can be open or True/False do not mix them. Return answers in a single string.
         `,
       },
     ],
@@ -35,32 +33,15 @@ const generateQuestions = async (
     !completion.choices[0].message ||
     !completion.choices[0].message.content
   ) {
-    console.log(completion);
     throw new Error('Invalid response from the API');
   }
 
   try {
-    const response = completion.choices[0].message.content?.split('\n');
-
-    if (!response) {
-      return response;
-    }
-
-    console.log(response);
-
-    const formattedResponse = [];
-
-    for (let i = 0; i < response.length; i += 3) {
-      formattedResponse.push({
-        question: response[i].split('Question:')[1].trim(),
-        answers: response[i + 1].split('Answers:')[1].trim(),
-        answer: response[i + 2].split('Answer:')[1].trim(),
-      });
-    }
-
-    return formattedResponse;
+    const response = JSON.parse(completion.choices[0].message.content);
+    return response;
   } catch (error) {
-    throw new Error(`Error occured: ${error}`);
+    console.error('Error parsing response:', error);
+    throw new Error(`Error occurred: ${error}`);
   }
 };
 

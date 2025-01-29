@@ -21,10 +21,10 @@ export default function ExamQuestions({
 }) {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<Answers[]>([]);
-  const [score, setScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(duration / 1000);
 
   const isSubmitted = useRef(false); //Use as a flag to handle submits
+  const scoreRef = useRef(0); // Store score in a reference instead of state prevents reset after re-render
 
   const currentQuestion = questions[currentQuestionIndex] as Question;
 
@@ -57,7 +57,7 @@ export default function ExamQuestions({
       },
     ]);
 
-    if (isAnswerCorrect) setScore(score + 1);
+    if (isAnswerCorrect) scoreRef.current += 1;
 
     setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
   };
@@ -66,7 +66,7 @@ export default function ExamQuestions({
     if (isSubmitted.current) return;
     isSubmitted.current = true;
 
-    console.log('Submitted Answers:', answers, 'Score:', score);
+    console.log('Submitted Answers:', answers, 'Score:', scoreRef.current);
     if (timeLeft > 0) {
       setTimeLeft(0);
     }
@@ -74,7 +74,7 @@ export default function ExamQuestions({
     ws.send(
       JSON.stringify({
         type: 'submit',
-        score,
+        score: scoreRef.current,
       })
     );
   };
@@ -86,7 +86,7 @@ export default function ExamQuestions({
       <header className={`mb-4 border-b pb-2 ${colors.border}`}>
         {timeLeft <= 0 ? (
           <p className={`${colors.text.secondary} text-center`}>
-            Congratulations(?) your score is {score} out of{' '}
+            Congratulations(?) your score is {scoreRef.current} out of{' '}
             {questions.length}
           </p>
         ) : (

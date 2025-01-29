@@ -11,6 +11,7 @@ import generateQuestions from '../lib/ai';
 import { Question, Set, User } from '../db/schema';
 import { getUserIdFromCookie } from '../shared/utils';
 import { db } from '../db/turso';
+import { LLMResponse } from '../shared/types';
 
 const question = new Hono<{ Variables: JwtVariables }>();
 
@@ -81,7 +82,7 @@ question.post(
       return c.json({ message: 'Unauthorized action' }, 403);
     }
 
-    const response = await generateQuestions(
+    const response: LLMResponse[] = await generateQuestions(
       set[0].name,
       numOfQuestions,
       level,

@@ -65,7 +65,7 @@ export default function ExamHistory() {
         ([sessionCode, examsInSession]) => (
           <div
             key={sessionCode}
-            className={`${colors.border} rounded-lg border`}
+            className={`${colors.border} mb-4 rounded-lg border`}
           >
             <button
               className={`w-full p-4 text-left ${colors.background.secondary} hover:${colors.background.tertiary} focus:outline-none`}
