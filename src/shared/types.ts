@@ -7,3 +7,9 @@ export type ExamQuestions = {
   }[];
   duration: number;
 };
+
+export type LLMResponse = {
+  question: string;
+  answer: string;
+  answers: string;
+};

@@ -49,7 +49,10 @@ auth.post(
       process.env.JWT_SECRET as string
     );
 
-    const magicLink = `http://localhost:5173/auth/verify/${jwtToken}`;
+    const magicLink =
+      process.env.NODE_ENV === 'production'
+        ? `PROD_URL/${jwtToken}`
+        : `http://localhost:5173/auth/verify/${jwtToken}`;
 
     try {
       const transporter = createTransport({
