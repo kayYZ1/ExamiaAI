@@ -41,5 +41,6 @@ jobs:
       - name: Run Tests
         run: bun test
 
-      - name: Build
-        run: cd client && bun --bun run build
+      - name: Build Client
+        working-directory: ./client
+        run: bun --bun run build
