@@ -76,7 +76,7 @@ export default function ExamHistory() {
                   Session: {sessionCode}
                 </span>
                 <span className={`text-sm ${colors.text.muted}`}>
-                  {examsInSession?.length} participant(s)
+                  {examsInSession && examsInSession.length} participant(s)
                 </span>
               </div>
             </button>
@@ -85,20 +85,21 @@ export default function ExamHistory() {
                 <div
                   className={`p-4 ${colors.background.tertiary} overflow-hidden transition-all duration-300 ease-in-out`}
                 >
-                  {examsInSession?.map((exam) => (
-                    <div key={exam.id} className="mb-4">
-                      <p className={`${colors.text.secondary}`}>
-                        <strong>Exam ID:</strong> {exam.examId}
-                      </p>
-                      <p className={`${colors.text.secondary}`}>
-                        <strong>Full Name:</strong> {exam.fullName}
-                      </p>
-                      <p className={`${colors.text.secondary}`}>
-                        <strong>Score:</strong> {exam.score}
-                      </p>
-                      <hr className={`my-2 ${colors.border}`} />
-                    </div>
-                  ))}
+                  {examsInSession &&
+                    examsInSession.map((exam) => (
+                      <div key={exam.id} className="mb-4">
+                        <p className={`${colors.text.secondary}`}>
+                          <strong>Exam ID:</strong> {exam.examId}
+                        </p>
+                        <p className={`${colors.text.secondary}`}>
+                          <strong>Full Name:</strong> {exam.fullName}
+                        </p>
+                        <p className={`${colors.text.secondary}`}>
+                          <strong>Score:</strong> {exam.score}
+                        </p>
+                        <hr className={`my-2 ${colors.border}`} />
+                      </div>
+                    ))}
                 </div>
               )}
             </div>

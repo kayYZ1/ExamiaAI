@@ -12,6 +12,7 @@
   "dependencies": {
     "@hookform/resolvers": "3.4.1",
     "@tanstack/react-query": "^5.62.7",
+    "@types/node": "^22.12.0",
     "@typeschema/zod": "^0.14.0",
     "axios": "^1.7.9",
     "lucide-react": "^0.468.0",
