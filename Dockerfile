@@ -17,8 +17,9 @@ WORKDIR /app
 # Copy node_modules and source code
 COPY --from=builder /app /app
 
-# Set environment variables (if needed)
-ENV NODE_ENV=production
+# Run migrations on production db
+RUN bun db:generate
+RUN bun db:migrate
 
 # Start the application
 CMD ["bun", "run", "start"]
