@@ -42,7 +42,7 @@ export default function ExamQuestions({
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [duration]);
+  });
 
   const handleAnswerSubmit = (selectedAnswer: string) => {
     const trimAnswer = selectedAnswer.trim();
