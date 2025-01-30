@@ -1,8 +1,8 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router';
-import { z } from 'zod';
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod/src/zod.js';
 
 import { getUser } from '@/lib/queries';
 import { colors } from '@/styles/theme';
@@ -59,7 +59,19 @@ export default function Account() {
       email: user && user.email,
       alias: user && user.alias ? user.alias : '',
     },
-    resolver: zodResolver(schema),
+    resolver: async (values, context, options) => {
+      const result = await zodResolver(schema)(values, context, options);
+      if (!result.errors) return result;
+
+      const fixedErrors = Object.fromEntries(
+        Object.entries(result.errors).map(([key, error]) => [
+          key,
+          error ? error : { message: 'Unknown error' }, // Ensure error exists
+        ])
+      );
+
+      return { values: result.values, errors: fixedErrors };
+    },
   });
 
   return (

@@ -30,7 +30,19 @@ export default function SignIn() {
     handleSubmit,
     formState: { errors },
   } = useForm<SignIn>({
-    resolver: zodResolver(schema),
+    resolver: async (values, context, options) => {
+      const result = await zodResolver(schema)(values, context, options);
+      if (!result.errors) return result;
+
+      const fixedErrors = Object.fromEntries(
+        Object.entries(result.errors).map(([key, error]) => [
+          key,
+          error ? error : { message: 'Unknown error' }, // Ensure error exists
+        ])
+      );
+
+      return { values: result.values, errors: fixedErrors };
+    },
   });
 
   return (
