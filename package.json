@@ -15,7 +15,6 @@
   "dependencies": {
     "@hono/zod-validator": "^0.4.2",
     "@libsql/client": "^0.14.0",
-    "@libsql/linux-x64-gnu": "^0.5.0-pre.5",
     "@types/bun": "^1.2.0",
     "drizzle-orm": "^0.38.2",
     "hono": "^4.6.13",
