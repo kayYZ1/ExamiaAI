@@ -7,19 +7,19 @@ WORKDIR /app
 COPY package.json bun.lockb ./
 RUN bun install --frozen-lockfile
 
-# Copy rest of the files
+# Copy the rest of the files
 COPY . ./
 
-# Build the binary
-RUN bun build src/index.ts --compile --outfile server --external:@libsql/linux-x64-gnu
-
 # Final stage
-FROM debian:bookworm-slim
+FROM oven/bun:1 AS runner
 
 WORKDIR /app
 
-# Copy only the compiled binary
-COPY --from=builder /app/server ./server
+# Copy node_modules and source code
+COPY --from=builder /app /app
 
-# Run the binary
-CMD ["./server"]
+# Set environment variables (if needed)
+ENV NODE_ENV=production
+
+# Start the application
+CMD ["bun", "run", "start"]
