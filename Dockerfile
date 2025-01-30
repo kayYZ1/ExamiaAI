@@ -11,7 +11,7 @@ RUN bun install --frozen-lockfile
 COPY . ./
 
 # Build the binary
-RUN bun build src/index.ts --compile --outfile server
+RUN bun build src/index.ts --compile --outfile server --external:@libsql/linux-x64-gnu
 
 # Final stage
 FROM debian:bookworm-slim
