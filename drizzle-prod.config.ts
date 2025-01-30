@@ -1,6 +1,6 @@
 import { defineConfig } from 'drizzle-kit';
 
-const url = process.env.TURSO_DATABASE_URL as string;
+const url = process.env.TURSO_DATABASE_URL_PROD as string;
 const authToken = process.env.TURSO_AUTH_TOKEN_PROD as string;
 
 export default defineConfig({
