@@ -105,7 +105,7 @@ auth.get('/verify', async (c) => {
       httpOnly: true,
       maxAge: 24 * 60 * 60,
       expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
-      sameSite: 'Lax',
+      sameSite: 'None',
     });
 
     return c.json(
