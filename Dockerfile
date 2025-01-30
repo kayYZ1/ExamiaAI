@@ -1,21 +1,25 @@
-# Use the official Bun image
-FROM oven/bun:latest
+# Build stage
+FROM oven/bun:1 AS builder
 
-# Set the working directory
-WORKDIR /usr/src/app
+WORKDIR /app
 
-# Cache dependencies (optional but recommended)
-FROM oven/bun:latest AS install
-
-COPY package.json ./
-
+# Copy package files first for better caching
+COPY package.json bun.lockb ./
 RUN bun install --frozen-lockfile
 
-# Copy application code
-COPY . .
+# Copy rest of the files
+COPY . ./
 
-# Expose port
-EXPOSE 3000
+# Build the binary
+RUN bun build src/index.ts --compile --outfile server
 
-# Run the app using Bun
-CMD ["bun", "run", "start"]
+# Final stage
+FROM debian:bookworm-slim
+
+WORKDIR /app
+
+# Copy only the compiled binary
+COPY --from=builder /app/server ./server
+
+# Run the binary
+CMD ["./server"]
