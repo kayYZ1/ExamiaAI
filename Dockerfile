@@ -17,6 +17,8 @@ WORKDIR /app
 # Copy node_modules and source code
 COPY --from=builder /app /app
 
+ENV NODE_ENV=production
+
 # Run migrations on production db
 RUN bun db:generate
 RUN bun db:migrate
