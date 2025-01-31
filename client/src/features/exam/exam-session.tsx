@@ -23,7 +23,7 @@ export default function ExamSession() {
 
   const socketUrl =
     process.env.NODE_ENV === 'production'
-      ? `ws://examiaai-production.up.railway.app`
+      ? `wss://examiaai-production.up.railway.app`
       : `ws://localhost:7676`;
 
   useEffect(() => {
