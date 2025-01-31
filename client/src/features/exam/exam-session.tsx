@@ -21,9 +21,14 @@ export default function ExamSession() {
 
   const fullNameRef = useRef<HTMLInputElement>(null);
 
+  const socketUrl =
+    process.env.NODE_ENV === 'production'
+      ? `ws://examiaai-production.up.railway.app`
+      : `ws://localhost:7676`;
+
   useEffect(() => {
     const socket = new WebSocket(
-      `ws://localhost:7676/ws/session/${connectionCode}`
+      `${socketUrl}/ws/session/${connectionCode}`
     );
 
     socket.onopen = () => {
