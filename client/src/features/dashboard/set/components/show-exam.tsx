@@ -6,9 +6,9 @@ import { XIcon } from 'lucide-react';
 import { colors } from '@/styles/theme';
 import { Exam } from '@/shared/ts/types';
 import Button from '@/shared/components/ui/button';
+import Spinner from '@/shared/components/ui/spinner';
 import { convertDurationToReadable } from '@/lib/utils';
 import api from '@/lib/api';
-import Spinner from '@/shared/components/ui/spinner';
 
 export default function ShowExam({
   exam,
@@ -114,8 +114,8 @@ export default function ShowExam({
             {data && (
               <p className={`${colors.text.muted} text-wrap`}>
                 {process.env.NODE_ENV === 'production'
-                  ? `https://examia-ai.netlify.app/${data.connectionCode}`
-                  : `http://localhost:7676/${data.connectionCode}`}
+                  ? `https://examia-ai.netlify.app/exam/${data.connectionCode}`
+                  : `http://localhost:7676/exam/${data.connectionCode}`}
               </p>
             )}
             {error && (
