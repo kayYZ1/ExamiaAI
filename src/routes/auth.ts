@@ -7,6 +7,8 @@ import type { JwtVariables } from 'hono/jwt';
 import { eq } from 'drizzle-orm';
 import { deleteCookie, setCookie } from 'hono/cookie';
 import { createTransport } from 'nodemailer';
+import path from 'path';
+import pug from 'pug';
 
 import { User } from '../db/schema';
 import { db } from '../db/turso';
@@ -63,11 +65,21 @@ auth.post(
           pass: process.env.MAIL_PASS,
         },
       });
+
+      const templatePath = path.join(
+        __dirname,
+        '..',
+        'lib',
+        'templates',
+        'email.pug'
+      );
+      const html = pug.renderFile(templatePath, { magicLink });
+
       const mailOptions = {
-        from: 'examia@mail.com',
+        from: 'auth@examia.xyz',
         to: email,
-        subject: 'Magic link login',
-        text: `${magicLink}`,
+        subject: 'App login',
+        html: html,
       };
 
       await transporter.sendMail(mailOptions);
