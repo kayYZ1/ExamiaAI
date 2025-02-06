@@ -17,7 +17,11 @@ const { websocket } = createBunWebSocket<ServerWebSocket>();
 app.use(
   '*',
   cors({
-    origin: ['http://localhost:5173', 'https://examia-ai.netlify.app'],
+    origin: [
+      'http://localhost:5173',
+      'https://examia-ai.netlify.app',
+      'https://examia.xyz',
+    ],
     allowHeaders: [
       'X-Custom-Header',
       'Upgrade-Insecure-Requests',
