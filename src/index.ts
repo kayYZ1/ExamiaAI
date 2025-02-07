@@ -21,6 +21,7 @@ app.use(
       'http://localhost:5173',
       'https://examia-ai.netlify.app',
       'https://examia.xyz',
+      'https://www.examia.xyz',
     ],
     allowHeaders: [
       'X-Custom-Header',
