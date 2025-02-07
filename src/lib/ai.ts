@@ -22,7 +22,7 @@ const generateQuestions = async (
           Respond in JSON format and return only this:
           [{"question": "..", "answers": ".., .., .., ..", "answer": ".."}]
           Maximum 4 answers can be open or True/False do not mix them. Return answers in a single string.
-          Alwasy return array of objects.
+          Always return array of objects.
         `,
       },
     ],
