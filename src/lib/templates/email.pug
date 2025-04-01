@@ -3,27 +3,50 @@ html
   head
     style.
       body {
-        font-family: Arial, sans-serif;
-        background-color: #f4f4f4;
-        color: #333;
-        padding: 20px;
+        font-family: 'Poppins', Arial, sans-serif;
+        background-color: #1a2a44;
+        color: #ffffff;
+        padding: 30px;
+        margin: 0;
       }
       .container {
-        background-color: #fff;
-        padding: 20px;
-        border-radius: 5px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        background: linear-gradient(135deg, #2a3b5a, #3b4a6b); 
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); 
+        max-width: 600px;
+        margin: 0 auto;
+      }
+      h1 {
+        color: #a3bffa; 
+        font-size: 2em;
+        text-align: center;
+      }
+      p {
+        font-size: 1.1em;
+        line-height: 1.6;
+        color: #d1d5db; 
+        text-align: center;
+      }
+      .button-container {
+        text-align: center;
       }
       a {
-        color: #fff;
-        background-color: #007bff;
-        padding: 10px 20px;
+        color: #ffffff !important;
+        background: linear-gradient(to right, #667eea, #764ba2);
+        padding: 12px 25px;
         text-decoration: none;
-        border-radius: 5px;
+        border-radius: 25px;
         display: inline-block;
+        font-weight: bold;
+        transition: transform 0.2s ease;
+      }
+      a:hover {
+        transform: scale(1.05);
       }
   body
     .container
-      h1 Welcome to Our Service!
-      p Click the button below to log in using your magic link:
-      a(href=magicLink) Log In
+      h1 Welcome to Examia! 
+      p Your magic link is here—click below to dive into the fun:
+      .button-container
+        a(href=magicLink) Log In Now!
