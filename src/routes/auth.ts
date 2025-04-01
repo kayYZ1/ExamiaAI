@@ -53,7 +53,7 @@ auth.post(
 
     const magicLink =
       process.env.NODE_ENV === 'production'
-        ? `https://examia-ai.netlify.app/auth/verify/${jwtToken}`
+        ? `https://www.examia.xyz/auth/verify/${jwtToken}`
         : `http://localhost:5173/auth/verify/${jwtToken}`;
 
     try {
