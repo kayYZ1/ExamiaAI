@@ -114,8 +114,8 @@ export default function ShowExam({
             {data && (
               <p className={`${colors.text.muted} text-wrap`}>
                 {process.env.NODE_ENV === 'production'
-                  ? `https://examia-ai.netlify.app/exam/${data.connectionCode}`
-                  : `http://localhost:7676/exam/${data.connectionCode}`}
+                  ? `https://www.examia.xyz/exam/${data.connectionCode}`
+                  : `http://localhost:5173/exam/${data.connectionCode}`}
               </p>
             )}
             {error && (

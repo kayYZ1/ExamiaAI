@@ -23,7 +23,7 @@ export default function ExamSession() {
 
   const socketUrl =
     process.env.NODE_ENV === 'production'
-      ? `wss://examiaai-production.up.railway.app`
+      ? `wss://www.examia.xyz`
       : `ws://localhost:7676`;
 
   useEffect(() => {
@@ -64,11 +64,11 @@ export default function ExamSession() {
     return () => {
       socket.close();
     };
-  }, [connectionCode]);
+  }, [connectionCode, socketUrl]);
 
   const joinSession = () => {
-    const fullName = fullNameRef.current?.value?.trim()!;
-    if (ws && fullName.trim()) {
+    const fullName = fullNameRef.current?.value?.trim();
+    if (ws && fullName?.trim()) {
       ws.send(
         JSON.stringify({
           type: 'join',

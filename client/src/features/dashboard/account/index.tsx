@@ -1,4 +1,8 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
 import { useNavigate } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -22,6 +26,8 @@ type Update = z.infer<typeof schema>;
 
 export default function Account() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
   const { data: user } = useQuery({
     queryKey: ['user'],
     queryFn: getUser,
@@ -35,6 +41,9 @@ export default function Account() {
     mutationKey: ['user'],
     mutationFn: async (data: Update) => {
       await api.patch('/user', data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['user'] });
     },
   });
 
